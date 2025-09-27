@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Hair - Gestione Salone</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FashionHair">
+  <meta name="theme-color" content="#8a2be2"> 
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <style>
+    /* --------------------------
+       STILI GENERALI E LAYOUT
+       -------------------------- */
+    :root {
+      --primary-color: #8a2be2; /* Viola brillante */
+      --secondary-color: #c8a2c8; /* Lilla (per eventi) */
+      --text-color: #333;
+      --light-bg: #f7f7f7;
+      --card-bg: #ffffff;
+      --border-color: #e0e0e0;
+      --delete-color: #dc3545;
+      --edit-color: #ffc107;
+      --success-color: #28a745; /* Verde per conflitto */
+    }
+
+    body { 
+        font-family: 'Arial', sans-serif; 
+        margin: 0; 
+        padding: 20px;
+        background: var(--light-bg); 
+        color: var(--text-color);
+        padding-top: 70px; /* Spazio per la barra di navigazione fissa */
+    }
+    
+    h1 { 
+        font-size: 2rem; 
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    h2, h3 {
+        color: var(--primary-color);
+        margin-top: 5px;
+        font-size: 1.3rem;
+    }
+    
+    .app-title {
+        font-size: 1.5rem; 
+        color: var(--card-bg); /* Bianco */
+        text-decoration: none; 
+        font-weight: bold;
+        transition: color 0.2s;
+        cursor: pointer;
+    }
+    .app-title:hover {
+        color: #f0f0f0;
+    }
+
+    /* Contenitori e Blocchi */
+    .container { 
+        display: flex; 
+        gap: 20px; 
+        flex-wrap: wrap; 
+        margin-bottom: 20px;
+    }
+    .block { 
+        flex: 1; 
+        min-width: 280px;
+        border: 1px solid var(--border-color); 
+        background: var(--card-bg); 
+        padding: 15px;
+        border-radius: 10px; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    .flex-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .list-item {
+        padding: 10px; 
+        border-bottom: 1px dashed var(--border-color); 
+        transition: background-color 0.2s;
+        font-size: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .list-item:hover {
+        background-color: #f3f3f3;
+        cursor: pointer; 
+    }
+    .list-item span {
+        flex-grow: 1;
+        cursor: pointer;
+    }
+    .list-item-actions button {
+        margin: 0 5px;
+        width: auto;
+        padding: 5px 10px;
+    }
+
+
+    /* --------------------------
+       FORM E INPUT
+       -------------------------- */
+    input, select, textarea { 
+        margin: 8px 0; 
+        padding: 10px; 
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px; 
+        box-sizing: border-box;
+    }
+    input[readonly] {
+        background-color: #eee;
+        color: #777;
+    }
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    #appointmentService { 
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 2px solid var(--primary-color); 
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        font-size: 1rem;
+        appearance: none; 
+        cursor: pointer;
+        box-sizing: border-box;
+        margin: 8px 0;
+    }
+    #appointmentService:hover {
+        border-color: #6a1a9e;
+        box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+    }
+
+    button { 
+        margin-top: 15px;
+        padding: 10px; 
+        width: 100%; 
+        background-color: var(--primary-color); 
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #6a1a9e;
+    }
+    /* Stili specifici per i pulsanti */
+    .btn-delete { background-color: var(--delete-color); }
+    .btn-delete:hover { background-color: #c82333; }
+    .btn-edit { background-color: var(--edit-color); color: var(--text-color); }
+    .btn-edit:hover { background-color: #e0a800; }
+    .btn-secondary { background-color: #6c757d; }
+    .btn-secondary:hover { background-color: #5a6268; }
+
+    /* --------------------------
+       NAVIGAZIONE HAMBURGER E BARRA FISSA
+       -------------------------- */
+    .nav-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        background-color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 5; 
+    }
+    
+    /* Tasto Hamburger */
+    #menuToggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 0;
+        margin-right: 15px;
+        width: 40px; 
+        text-align: left;
+        margin-top: 0;
+        line-height: 1; 
+    }
+    #menuToggle:hover {
+        opacity: 0.8;
+    }
+    
+    /* Menu Laterale a Scorrimento */
+    #sideMenu {
+        height: 100%;
+        width: 0; 
+        position: fixed;
+        z-index: 10; 
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    }
+    
+    #sideMenu a, #sideMenu button {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 1.2rem; 
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+        background: none;
+        border: none;
+        text-align: left;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 0;
+    }
+    
+    #sideMenu a:hover, #sideMenu button:hover {
+        color: #f1f1f1;
+    }
+    
+    #sideMenu .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    /* Overlay per click esterno */
+    #menuOverlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 9;
+        display: none;
+    }
+
+    /* --------------------------
+       CALENDARIO
+       -------------------------- */
+    hr { border: 0; height: 1px; background-color: var(--border-color); margin: 20px 0; }
+    #calendar { max-width: 1100px; margin: 20px auto; background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .fc-event { pointer-events: none; } 
+    .fc-timegrid-event { pointer-events: auto; }
+
+    /* Stile per eventi in conflitto (sovrapposti) */
+    .event-conflict {
+        background-color: var(--success-color) !important; 
+        border-color: var(--success-color) !important;
+    }
+
+    /* STILI FULLCALENDAR (TASTI E WIDGET) */
+    .fc .fc-button-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        border-radius: 8px; 
+        padding: 8px 12px;
+        font-weight: bold;
+        transition: background-color 0.3s, border-color 0.3s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 0 2px;
+    }
+    .fc .fc-button-primary:hover,
+    .fc .fc-button-primary:disabled {
+        background-color: #6a1a9e; 
+        border-color: #6a1a9e;
+        opacity: 0.9;
+    }
+    .fc-prev-button, .fc-next-button {
+        padding: 5px 8px !important;
+        font-size: 1.2em !important;
+    }
+
+    /* --------------------------
+       LOGIN SCREEN
+       -------------------------- */
+    #loginContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        flex-direction: column;
+        padding-top: 0; 
+    }
+    #loginBox {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    /* --------------------------
+       RESPONSIVITÀ PER SMARTPHONE
+       (CORREZIONE TASTI CALENDARIO MOBILE QUI)
+       -------------------------- */
+    @media (max-width: 768px) {
+        body { padding: 10px; padding-top: 70px; } 
+        h1 { font-size: 1.5rem; }
+        .container { flex-direction: column; }
+        .block { min-width: 100%; }
+        .modal-content { width: 95%; margin: 10% auto; }
+        
+        /* ⭐ CORREZIONE FULLCALENDAR TASTI MOBILE ⭐ */
+        .fc-toolbar {
+            flex-direction: column; 
+            align-items: flex-start;
+        }
+        .fc-toolbar-chunk {
+            margin-bottom: 8px;
+            width: 100%;
+            display: flex; /* Assicura che gli elementi interni usino flex */
+            justify-content: center; /* Centra gli elementi (titolo/bottoni) */
+        }
+        .fc-toolbar-chunk:nth-child(2) { 
+            order: -1; /* Mette il titolo in alto */
+        }
+        .fc-toolbar-chunk:first-child,
+        .fc-toolbar-chunk:last-child {
+            justify-content: space-around; /* Distribuisce i bottoni lungo la larghezza */
+        }
+        .fc .fc-button-group {
+             flex-wrap: wrap;
+             justify-content: center;
+        }
+        /* ⭐ FINE CORREZIONE FULLCALENDAR ⭐ */
+
+        /* Menu laterale full screen */
+        #sideMenu { width: 80%; max-width: 300px; }
+    }
+    
+    /* --------------------------
+       STILI MODALI
+       -------------------------- */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 100; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto; 
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; 
+        max-width: 500px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .appointments-history {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    /* --------------------------
+       STILI TOGGLE ADMIN
+       -------------------------- */
+    .switch-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 15px 0;
+        padding: 10px 0;
+        border-top: 1px solid var(--border-color);
+    }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: var(--primary-color);
+    }
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // ⚠️ CONFIGURAZIONE FIREBASE (Mantienila come è stata impostata)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMGmWVch2C_ri5_Xm5-LiXVM0lpdaTB_8",
+      authDomain: "adry-f721c.firebaseapp.com",
+      projectId: "adry-f721c",
+      storageBucket: "adry-f721c.firebaseapp.com", // CORREZIONE: A volte 'storageBucket' necessita di '.app'
+      messagingSenderId: "154658910845",
+      appId: "1:154658910845:web:52dc99217dbe499be82b7b21"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let calendar;
+    let servicesListData = [];
+    let clientsListData = [];
+    let clientsMap = {}; 
+    let servicesMap = {}; 
+    let appointmentsListData = []; 
+    
+    let currentUser = null; 
+    
+    // Variabili per l'editing modale
+    let currentAppointmentId = null;
+    let currentClientId = null;
+    let currentServiceId = null; 
+    let currentUserId = null;
+
+
+    // PWA: Registrazione Service Worker (simulato)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registrato con successo: ', registration.scope);
+          })
+          .catch(err => {
+            console.log('Registrazione ServiceWorker fallita: ', err);
+          });
+      });
+    }
+
+
+    // --- FUNZIONI DI UTILITÀ ---
+    function sanitizeName(name) {
+        return name.toLowerCase().replace(/\s/g, '');
+    }
+
+    function calculateAppointmentEnd(startStr, durationMinutes) {
+        const startTime = new Date(startStr);
+        startTime.setMinutes(startTime.getMinutes() + durationMinutes);
+        return startTime.toISOString();
+    }
+
+    function displayMessage(containerId, message, isError = false) {
+        const el = document.getElementById(containerId);
+        if (el) {
+            el.textContent = message;
+            el.style.color = isError ? 'var(--delete-color)' : 'var(--success-color)';
+            setTimeout(() => el.textContent = '', 3000);
+        }
+    }
+
+
+    // --- FUNZIONI DI AUTENTICAZIONE E ADMIN ---
+
+    async function setupDefaultAdmin() {
+        try {
+            const adminRef = doc(db, "users", "admin");
+            const adminSnap = await getDoc(adminRef);
+
+            if (!adminSnap.exists()) {
+                await setDoc(adminRef, {
+                    username: "admin",
+                    password: "admin01", 
+                    isAdmin: true
+                });
+                console.log("Utente 'admin' predefinito creato.");
+            } else if (adminSnap.data().isAdmin === undefined) {
+                 await updateDoc(adminRef, { isAdmin: true });
+            }
+        } catch (e) {
+            console.error("Errore nella creazione dell'utente admin:", e);
+        }
+    }
+
+    async function login() {
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+        const messageEl = document.getElementById("loginMessage");
+        messageEl.textContent = "";
+
+        if (!username || !password) {
+            messageEl.textContent = "Inserisci nome utente e password.";
+            return;
+        }
+
+        try {
+            const q = query(collection(db, "users"), 
+                            where("username", "==", username), 
+                            where("password", "==", password));
+            const snap = await getDocs(q);
+            
+            let userMatch = null;
+            if (!snap.empty) {
+                userMatch = { id: snap.docs[0].id, ...snap.docs[0].data() };
+            }
+
+            if (userMatch) {
+                currentUser = userMatch;
+                sessionStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                checkAuthentication();
+                document.getElementById("loginUsername").value = "";
+                document.getElementById("loginPassword").value = "";
+            } else {
+                messageEl.textContent = "Credenziali non valide.";
+            }
+
+        } catch (e) {
+            console.error("Errore durante il login:", e);
+            messageEl.textContent = "Errore di comunicazione con il server.";
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        sessionStorage.removeItem('loggedInUser');
+        checkAuthentication();
+    }
+
+    function changeView(viewId) {
+        closeSideMenu(); 
+
+        const mainSectionId = 'section_gestione';
+        const adminSectionId = 'section_admin';
+        const clientsSectionId = 'section_clienti';
+        
+        if (viewId === adminSectionId && (!currentUser || !currentUser.isAdmin)) {
+            viewId = mainSectionId;
+        }
+        
+        if (viewId === clientsSectionId) {
+            document.getElementById("clientSearchInput").value = ''; 
+            loadClientAddressBook(''); 
+        }
+        if (viewId === 'section_servizi') {
+            loadServiceList();
+        }
+
+
+        document.querySelectorAll('.main-section').forEach(el => el.style.display = 'none');
+        
+        const targetElement = document.getElementById(viewId);
+        if (targetElement) {
+            targetElement.style.display = 'block';
+
+            if (viewId === mainSectionId && calendar) {
+                setTimeout(() => {
+                    calendar.updateSize(); 
+                }, 0); 
+            }
+        }
+    }
+
+    function openSideMenu() {
+        document.getElementById("sideMenu").style.width = "250px"; 
+        document.getElementById("menuOverlay").style.display = "block";
+
+        const adminOption = document.getElementById('adminMenuOption');
+        if (currentUser && currentUser.isAdmin) {
+             adminOption.style.display = 'block';
+             loadUserList(); 
+        } else {
+             adminOption.style.display = 'none';
+        }
+    }
+
+    function closeSideMenu() {
+        document.getElementById("sideMenu").style.width = "0";
+        document.getElementById("menuOverlay").style.display = "none";
+    }
+
+    function checkAuthentication() {
+        const loggedInUser = sessionStorage.getItem('loggedInUser');
+        const loginContainer = document.getElementById('loginContainer');
+        const appContent = document.getElementById('appContent');
+        
+        const navBar = document.getElementById('mainNavBar');
+
+        if (loggedInUser) {
+            currentUser = JSON.parse(loggedInUser);
+            loginContainer.style.display = 'none';
+            appContent.style.display = 'block';
+            navBar.style.display = 'flex'; 
+
+            loadClientsAndServices();
+            loadAppointments();
+
+            changeView('section_gestione');
+
+        } else {
+            currentUser = null;
+            loginContainer.style.display = 'flex';
+            appContent.style.display = 'none';
+            navBar.style.display = 'none'; 
+            
+        }
+    }
+
+
+    // --- FUNZIONI: ADMIN PANEL UTENTI (CRUD UTENTI) ---
+    async function createUser() { 
+        const username = document.getElementById("newAuthUsername").value.trim();
+        const password = document.getElementById("newAuthPassword").value.trim();
+
+        if (!username || !password) {
+            alert("Inserisci nome utente e password.");
+            return;
+        }
+        
+        try {
+            // Controlla se l'username esiste già (basandosi sul campo username nel database)
+            const q = query(collection(db, "users"), where("username", "==", username));
+            const snap = await getDocs(q);
+
+            if (!snap.empty) {
+                 alert("Nome utente già esistente.");
+                 return;
+            }
+
+            await addDoc(collection(db, "users"), {
+                username: username,
+                password: password,
+                isAdmin: false 
+            });
+            
+            document.getElementById("newAuthUsername").value = '';
+            document.getElementById("newAuthPassword").value = '';
+            alert(`Utente ${username} creato con successo.`);
+            loadUserList();
+
+        } catch (e) {
+            console.error("Errore durante la creazione utente:", e);
+            alert("Errore nella creazione dell'utente.");
+        }
+    }
+
+    async function loadUserList() { 
+        const container = document.getElementById("userListContainer");
+        container.innerHTML = 'Caricamento utenti...';
+        
+        try {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            container.innerHTML = '';
+            
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                const isAdmin = userData.isAdmin ? ' (Admin)' : '';
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <span onclick="openUserModal('${doc.id}')">${userData.username}${isAdmin}</span>
+                    <div class="list-item-actions">
+                        <button class="btn-edit" onclick="openUserModal('${doc.id}')">Modifica</button>
+                        ${userData.username !== currentUser.username ? `<button class="btn-delete" onclick="deleteUser('${doc.id}', '${userData.username}')">Elimina</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p>Nessun utente trovato.</p>';
+            }
+
+        } catch (e) {
+            console.error("Errore nel caricamento della lista utenti:", e);
+            container.innerHTML = '<p style="color:red;">Errore nel caricamento.</p>';
+        }
+    }
+
+    async function openUserModal(userId) { 
+        currentUserId = userId;
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        
+        if (!docSnap.exists()) {
+            alert("Utente non trovato.");
+            return;
+        }
+        
+        const data = docSnap.data();
+        document.getElementById("modalUsername").value = data.username;
+        document.getElementById("modalUserPassword").value = data.password;
+        document.getElementById("adminToggle").checked = data.isAdmin || false; 
+        document.getElementById("adminMessage").textContent = '';
+
+        const isCurrentUser = data.username === currentUser.username;
+        document.getElementById("adminToggle").disabled = isCurrentUser;
+        if (isCurrentUser) {
+            document.getElementById("adminMessage").textContent = "Non puoi revocare il tuo status Admin mentre sei loggato.";
+        }
+
+        const deleteButton = document.getElementById("modalUserDeleteButton");
+        deleteButton.onclick = () => deleteUser(userId, data.username);
+        deleteButton.disabled = isCurrentUser;
+
+
+        document.getElementById("userModal").style.display = "block";
+    }
+
+    async function updateUser() { 
+        const userId = currentUserId;
+        const password = document.getElementById("modalUserPassword").value.trim();
+        const isAdmin = document.getElementById("adminToggle").checked;
+
+        if (!password) {
+            alert("La password non può essere vuota.");
+            return;
+        }
+
+        try {
+            const userRef = doc(db, "users", userId);
+            await updateDoc(userRef, {
+                password: password,
+                isAdmin: isAdmin
+            });
+            
+            alert(`Utente aggiornato con successo.`);
+            closeUserModal();
+            loadUserList();
+            
+            const username = document.getElementById("modalUsername").value;
+            if (username === currentUser.username && !isAdmin) {
+                 logout();
+            }
+
+        } catch (e) {
+            console.error("Errore durante l'aggiornamento utente:", e);
+            alert("Errore nell'aggiornamento dell'utente.");
+        }
+    }
+
+    async function deleteUser(userId, username) { 
+        if (!confirm(`Sei sicuro di voler eliminare l'utente ${username}? Questa azione è irreversibile.`)) {
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, "users", userId));
+            alert(`Utente ${username} eliminato.`);
+            closeUserModal();
+            loadUserList();
+
+        } catch (e) {
+            console.error("Errore durante l'eliminazione utente:", e);
+            alert("Errore nell'eliminazione dell'utente.");
+        }
+    }
+
+    function closeUserModal() { 
+        document.getElementById("userModal").style.display = "none";
+        currentUserId = null;
+    }
+
+
+    // ----------------------------------------------------------------------------------
+    // --- FUNZIONI CRUD CLIENTS ---
+    // ----------------------------------------------------------------------------------
+
+    async function loadClientsAndServices() { 
+        clientsListData = [];
+        servicesListData = [];
+        clientsMap = {}; 
+        servicesMap = {};
+
+        try {
+            // Carica Clienti
+            const clientsSnap = await getDocs(collection(db, "clients"));
+            const clientDatalist = document.getElementById("clientNames");
+            clientDatalist.innerHTML = '';
+            clientsSnap.forEach(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                clientsListData.push(data);
+                clientsMap[data.name.toLowerCase()] = data;
+                const option = document.createElement('option');
+                option.value = data.name;
+                clientDatalist.appendChild(option);
+            });
+
+            // Carica Servizi
+            const servicesSnap = await getDocs(query(collection(db, "services"), orderBy("name")));
+            const serviceSelect = document.getElementById("appointmentService");
+            serviceSelect.innerHTML = '<option value="">-- Seleziona Servizio --</option>';
+            
+            const modalServiceSelect = document.getElementById("modalAppointmentService");
+            modalServiceSelect.innerHTML = '';
+
+            servicesSnap.forEach(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                servicesListData.push(data);
+                servicesMap[data.id] = data; 
+                
+                const optionApp = document.createElement('option');
+                optionApp.value = doc.id;
+                optionApp.textContent = `${data.name} (${data.duration} min)`;
+                optionApp.dataset.duration = data.duration;
+                serviceSelect.appendChild(optionApp);
+                
+                const optionModal = document.createElement('option');
+                optionModal.value = doc.id;
+                optionModal.textContent = `${data.name} (${data.duration} min)`;
+                modalServiceSelect.appendChild(optionModal);
+            });
+
+            if (document.getElementById('section_clienti').style.display === 'block') {
+                 loadClientAddressBook();
+            }
+
+        } catch (e) {
+            console.error("Errore nel caricamento di clienti/servizi:", e);
+        }
+    }
+
+    async function addClient() { 
+        const name = document.getElementById("newClient").value.trim();
+        const phone = document.getElementById("clientPhone").value.trim();
+        const notes = document.getElementById("clientNotes").value.trim();
+
+        if (!name) {
+            alert("Il nome del cliente è obbligatorio.");
+            return;
+        }
+
+        try {
+            const newClient = {
+                name: name,
+                phone: phone,
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+
+            await addDoc(collection(db, "clients"), newClient);
+            
+            document.getElementById("newClient").value = '';
+            document.getElementById("clientPhone").value = '';
+            document.getElementById("clientNotes").value = '';
+            
+            alert(`Cliente ${name} aggiunto con successo.`);
+            await loadClientsAndServices();
+            loadClientAddressBook();
+
+        } catch (e) {
+            console.error("Errore nell'aggiunta del cliente:", e);
+            alert("Errore nell'aggiunta del cliente.");
+        }
+    }
+
+    async function openClientModal(clientId) { 
+        currentClientId = clientId;
+        const client = clientsListData.find(c => c.id === clientId);
+
+        if (!client) {
+            alert("Cliente non trovato.");
+            return;
+        }
+
+        document.getElementById("modalClientTitle").textContent = `Modifica: ${client.name}`;
+        document.getElementById("modalClientId").value = clientId;
+        document.getElementById("modalClientName").value = client.name;
+        document.getElementById("modalClientPhone").value = client.phone || '';
+        document.getElementById("modalClientNotes").value = client.notes || '';
+        
+        document.getElementById("modalClientDeleteButton").onclick = () => deleteClient(clientId, client.name);
+        
+        await loadClientAppointmentsHistory(client.name);
+
+        document.getElementById("clientModal").style.display = "block";
+    }
+
+    async function editClient(clientId) { 
+        const newName = document.getElementById("modalClientName").value.trim();
+        const newPhone = document.getElementById("modalClientPhone").value.trim();
+        const newNotes = document.getElementById("modalClientNotes").value.trim();
+
+        if (!newName) {
+            alert("Il nome del cliente è obbligatorio.");
+            return;
+        }
+        
+        const oldClient = clientsListData.find(c => c.id === clientId);
+
+        try {
+            const clientRef = doc(db, "clients", clientId);
+            await updateDoc(clientRef, {
+                name: newName,
+                phone: newPhone,
+                notes: newNotes
+            });
+            
+            // Aggiorna tutti gli appuntamenti esistenti con il nuovo nome 
+            if (oldClient && oldClient.name !== newName) {
+                const q = query(collection(db, "appointments"), where("clientName", "==", oldClient.name));
+                const snap = await getDocs(q);
+                
+                const batchUpdates = [];
+                snap.forEach(appointmentDoc => {
+                    batchUpdates.push(updateDoc(appointmentDoc.ref, { clientName: newName }));
+                });
+                await Promise.all(batchUpdates);
+                
+                await loadAppointments();
+            }
+
+            alert(`Cliente ${newName} aggiornato con successo.`);
+            closeClientModal();
+            await loadClientsAndServices();
+            loadClientAddressBook();
+
+        } catch (e) {
+            console.error("Errore nell'aggiornamento del cliente:", e);
+            alert("Errore nell'aggiornamento del cliente.");
+        }
+    }
+
+    async function deleteClient(clientId, clientName) { 
+        if (!confirm(`Sei sicuro di voler eliminare il cliente ${clientName} e tutti i suoi appuntamenti? Questa azione è irreversibile.`)) {
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, "clients", clientId));
+
+            const q = query(collection(db, "appointments"), where("clientName", "==", clientName));
+            const snap = await getDocs(q);
+            
+            const batchDeletes = [];
+            snap.forEach(appointmentDoc => {
+                batchDeletes.push(deleteDoc(appointmentDoc.ref));
+            });
+            await Promise.all(batchDeletes);
+
+            alert(`Cliente ${clientName} e ${snap.size} appuntamenti eliminati.`);
+            closeClientModal();
+            await loadClientsAndServices();
+            await loadAppointments();
+            loadClientAddressBook();
+
+        } catch (e) {
+            console.error("Errore nell'eliminazione del cliente:", e);
+            alert("Errore nell'eliminazione del cliente.");
+        }
+    }
+
+    function closeClientModal() { 
+        document.getElementById("clientModal").style.display = "none";
+        currentClientId = null;
+    }
+
+    function loadClientAddressBook(searchTerm = '') { 
+        const container = document.getElementById("clientListContainer");
+        container.innerHTML = '';
+        const lowerSearch = searchTerm.toLowerCase();
+
+        const filteredClients = clientsListData.filter(client => 
+            client.name.toLowerCase().includes(lowerSearch) || 
+            (client.phone && client.phone.includes(searchTerm))
+        );
+
+        if (filteredClients.length === 0) {
+            container.innerHTML = '<p>Nessun cliente trovato.</p>';
+            return;
+        }
+
+        filteredClients.sort((a, b) => a.name.localeCompare(b.name)).forEach(client => {
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `
+                <span onclick="openClientModal('${client.id}')">
+                    <strong>${client.name}</strong> 
+                    ${client.phone ? `(${client.phone})` : ''}
+                </span>
+                <div class="list-item-actions">
+                    <button class="btn-edit" onclick="openClientModal('${client.id}')">Dettagli</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function filterClientAddressBook() { 
+        const searchTerm = document.getElementById("clientSearchInput").value.trim();
+        loadClientAddressBook(searchTerm);
+    }
+
+    async function loadClientAppointmentsHistory(clientName) { 
+        const container = document.getElementById("appointmentsHistory");
+        container.innerHTML = 'Caricamento storico...';
+
+        try {
+            const q = query(
+                collection(db, "appointments"), 
+                where("clientName", "==", clientName), 
+                orderBy("start", "desc") 
+            );
+            const snap = await getDocs(q);
+            
+            container.innerHTML = '';
+
+            if (snap.empty) {
+                container.innerHTML = '<p>Nessun appuntamento passato o futuro trovato.</p>';
+                return;
+            }
+
+            snap.forEach(doc => {
+                const data = doc.data();
+                const date = new Date(data.start).toLocaleDateString('it-IT');
+                const time = new Date(data.start).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                
+                const service = servicesMap[data.serviceId] ? servicesMap[data.serviceId].name : 'Servizio Sconosciuto';
+                const price = data.price > 0 ? ` - ${data.price.toFixed(2)}€` : '';
+
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.style.padding = '5px';
+                item.innerHTML = `
+                    <div>
+                        <strong>${date} ${time}</strong>: ${service}${price}
+                        <div style="font-size: 0.8rem; color: #777;">${data.notes ? `Note: ${data.notes}` : ''}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+        } catch (e) {
+            console.error("Errore nel caricamento storico appuntamenti:", e);
+            container.innerHTML = '<p style="color:red;">Errore nel caricamento dello storico.</p>';
+        }
+    }
+
+
+    // ----------------------------------------------------------------------------------
+    // --- FUNZIONI CRUD SERVICES ---
+    // ----------------------------------------------------------------------------------
+
+    async function addService() { 
+        const name = document.getElementById("newService").value.trim();
+        const duration = parseInt(document.getElementById("serviceDuration").value);
+        const price = parseFloat(document.getElementById("servicePrice").value) || 0;
+
+        if (!name || isNaN(duration) || duration <= 0) {
+            alert("Nome e durata (minuti validi) sono obbligatori.");
+            return;
+        }
+        
+        if (servicesListData.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+            alert("Un servizio con questo nome esiste già.");
+            return;
+        }
+
+
+        try {
+            const newService = {
+                name: name,
+                duration: duration,
+                price: price
+            };
+
+            await addDoc(collection(db, "services"), newService);
+            
+            document.getElementById("newService").value = '';
+            document.getElementById("serviceDuration").value = '';
+            document.getElementById("servicePrice").value = '';
+            
+            alert(`Servizio ${name} aggiunto con successo.`);
+            await loadClientsAndServices();
+            loadServiceList(); 
+
+        } catch (e) {
+            console.error("Errore nell'aggiunta del servizio:", e);
+            alert("Errore nell'aggiunta del servizio.");
+        }
+    }
+
+    function loadServiceList() { 
+        const container = document.getElementById("serviceListContainer");
+        container.innerHTML = '';
+
+        if (servicesListData.length === 0) {
+            container.innerHTML = '<p>Nessun servizio trovato. Aggiungine uno qui sopra.</p>';
+            return;
+        }
+
+        servicesListData.sort((a, b) => a.name.localeCompare(b.name)).forEach(service => {
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            const priceDisplay = service.price > 0 ? ` - ${service.price.toFixed(2)}€` : '';
+            item.innerHTML = `
+                <span onclick="openServiceModal('${service.id}')">
+                    <strong>${service.name}</strong> 
+                    (${service.duration} min)${priceDisplay}
+                </span>
+                <div class="list-item-actions">
+                    <button class="btn-edit" onclick="openServiceModal('${service.id}')">Modifica</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    async function openServiceModal(serviceId) { 
+        currentServiceId = serviceId;
+        const service = servicesListData.find(s => s.id === serviceId);
+
+        if (!service) {
+            alert("Servizio non trovato.");
+            return;
+        }
+
+        document.getElementById("modalServiceNameTitle").textContent = `Modifica: ${service.name}`;
+        document.getElementById("modalServiceDuration").value = service.duration;
+        document.getElementById("modalServicePrice").value = service.price || 0;
+        
+        // Il nome è solo display, non modificabile direttamente (serve per ID)
+        document.getElementById("modalServiceName").value = service.name; 
+        
+        document.getElementById("modalServiceEditButton").onclick = () => editService(serviceId);
+        document.getElementById("modalServiceDeleteButton").onclick = () => deleteService(serviceId, service.name);
+
+        document.getElementById("serviceModal").style.display = "block";
+    }
+
+    async function editService(serviceId) { 
+        const newDuration = parseInt(document.getElementById("modalServiceDuration").value);
+        const newPrice = parseFloat(document.getElementById("modalServicePrice").value) || 0;
+
+        if (isNaN(newDuration) || newDuration <= 0) {
+            alert("La durata deve essere un numero valido di minuti.");
+            return;
+        }
+        
+        const oldService = servicesListData.find(s => s.id === serviceId);
+
+        try {
+            const serviceRef = doc(db, "services", serviceId);
+            await updateDoc(serviceRef, {
+                duration: newDuration,
+                price: newPrice
+            });
+            
+            alert(`Servizio ${oldService.name} aggiornato con successo.`);
+            closeServiceModal();
+            await loadClientsAndServices();
+            loadServiceList();
+
+        } catch (e) {
+            console.error("Errore nell'aggiornamento del servizio:", e);
+            alert("Errore nell'aggiornamento del servizio.");
+        }
+    }
+
+    async function deleteService(serviceId, serviceName) { 
+        if (!confirm(`Sei sicuro di voler eliminare il servizio ${serviceName}? Questa azione è irreversibile e non eliminerà gli appuntamenti esistenti che lo usano.`)) {
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, "services", serviceId));
+            alert(`Servizio ${serviceName} eliminato.`);
+            closeServiceModal();
+            await loadClientsAndServices();
+            loadServiceList();
+
+        } catch (e) {
+            console.error("Errore nell'eliminazione del servizio:", e);
+            alert("Errore nell'eliminazione del servizio.");
+        }
+    }
+
+    function closeServiceModal() { 
+        document.getElementById("serviceModal").style.display = "none";
+        currentServiceId = null;
+    }
+
+
+    // ----------------------------------------------------------------------------------
+    // --- FUNZIONI CRUD APPOINTMENTS ---
+    // ----------------------------------------------------------------------------------
+
+    async function loadAppointments() { 
+        try {
+            const querySnapshot = await getDocs(collection(db, "appointments"));
+            appointmentsListData = [];
+            let events = [];
+            
+            // Passaggio 1: Raccogli i dati e verifica i conflitti
+            querySnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                appointmentsListData.push({ id: doc.id, ...data });
+            });
+            
+            // Passaggio 2: Calcola i conflitti dopo aver caricato tutti i dati
+            events = appointmentsListData.map(data => {
+                const service = servicesMap[data.serviceId] ? servicesMap[data.serviceId] : { name: 'Sconosciuto', duration: 30 };
+                
+                const start1 = new Date(data.start).getTime();
+                const end1 = new Date(data.end).getTime();
+                let isConflict = false;
+
+                appointmentsListData.forEach(otherData => {
+                    if (data.id === otherData.id) return;
+
+                    const start2 = new Date(otherData.start).getTime();
+                    const end2 = new Date(otherData.end).getTime();
+                    
+                    if (start1 < end2 && end1 > start2) {
+                        isConflict = true;
+                    }
+                });
+                
+                return {
+                    id: data.id,
+                    title: `${data.clientName} (${service.name})`,
+                    start: data.start,
+                    end: data.end,
+                    extendedProps: {
+                        clientName: data.clientName,
+                        serviceId: data.serviceId,
+                        price: data.price,
+                        notes: data.notes,
+                        conflict: isConflict 
+                    },
+                    color: isConflict ? 'var(--success-color)' : 'var(--primary-color)' 
+                };
+            });
+
+
+            if (calendar) {
+                calendar.removeAllEvents();
+                calendar.addEventSource(events);
+            }
+
+        } catch (e) {
+            console.error("Errore nel caricamento degli appuntamenti:", e);
+        }
+    }
+
+    async function checkAppointmentConflict(currentEventId, newStart, newEnd) { 
+        const otherAppointments = appointmentsListData.filter(app => app.id !== currentEventId);
+
+        const newStartTime = new Date(newStart).getTime();
+        const newEndTime = new Date(newEnd).getTime();
+
+        const isConflict = otherAppointments.some(existing => {
+            const existingStart = new Date(existing.start).getTime();
+            const existingEnd = new Date(existing.end).getTime();
+            
+            return (newStartTime < existingEnd && newEndTime > existingStart);
+        });
+        
+        return isConflict;
+    }
+
+    async function addAppointment() { 
+        const clientName = document.getElementById("appointmentClient").value.trim();
+        const clientPhone = document.getElementById("appointmentPhone").value.trim();
+        const serviceId = document.getElementById("appointmentService").value;
+        const startStr = document.getElementById("appointmentStart").value; 
+        const notes = document.getElementById("appointmentNotes").value.trim();
+
+        if (!clientName || !serviceId || !startStr) {
+            alert("Cliente, Servizio e Orario di Inizio sono obbligatori.");
+            return;
+        }
+        
+        const service = servicesMap[serviceId];
+        if (!service) {
+            alert("Servizio non valido.");
+            return;
+        }
+
+        const durationMinutes = service.duration;
+        const endStr = calculateAppointmentEnd(startStr, durationMinutes);
+        const startISO = new Date(startStr).toISOString();
+
+        // 1. Controllo Conflitto (Passando null come ID perché è una nuova creazione)
+        const isConflict = await checkAppointmentConflict(null, startISO, endStr);
+        if (isConflict) {
+            if (!confirm("Attenzione: Conflitto di orario rilevato! Vuoi comunque creare l'appuntamento?")) {
+                return;
+            }
+        }
+        
+        try {
+            // 2. Aggiungi/aggiorna il cliente se è nuovo
+            const clientExists = clientsMap[clientName.toLowerCase()];
+            if (!clientExists && clientName) {
+                const newClient = {
+                    name: clientName,
+                    phone: clientPhone,
+                    notes: notes,
+                    createdAt: new Date().toISOString()
+                };
+                await addDoc(collection(db, "clients"), newClient);
+                await loadClientsAndServices(); 
+            } else if (clientExists && !clientExists.phone && clientPhone) {
+                await updateDoc(doc(db, "clients", clientExists.id), { phone: clientPhone });
+                await loadClientsAndServices();
+            }
+            
+            // 3. Aggiungi Appuntamento
+            const newAppointment = {
+                clientName: clientName,
+                serviceId: serviceId,
+                start: startISO, 
+                end: endStr,
+                price: service.price || 0,
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+
+            await addDoc(collection(db, "appointments"), newAppointment);
+            
+            // Pulisci il form e ricarica
+            document.getElementById("appointmentClient").value = '';
+            document.getElementById("appointmentPhone").value = '';
+            document.getElementById("appointmentService").value = '';
+            document.getElementById("appointmentStart").value = '';
+            document.getElementById("appointmentNotes").value = '';
+            
+            await loadAppointments();
+            alert("Appuntamento creato con successo!");
+
+        } catch (e) {
+            console.error("Errore nell'aggiunta dell'appuntamento:", e);
+            alert("Errore nell'aggiunta dell'appuntamento.");
+        }
+    }
+
+    async function openAppointmentModal(appointmentId) { 
+        currentAppointmentId = appointmentId;
+        const appointment = appointmentsListData.find(a => a.id === appointmentId);
+
+        if (!appointment) {
+            alert("Appuntamento non trovato.");
+            return;
+        }
+        
+        document.getElementById("modalAppointmentTitle").textContent = `Modifica: ${appointment.clientName}`;
+        document.getElementById("modalAppointmentId").value = appointmentId;
+        document.getElementById("modalAppointmentClient").value = appointment.clientName;
+        document.getElementById("modalAppointmentService").value = appointment.serviceId;
+        document.getElementById("modalAppointmentPrice").value = appointment.price || 0;
+        document.getElementById("modalAppointmentNotes").value = appointment.notes || '';
+
+        const startDate = new Date(appointment.start);
+        const startValue = startDate.toISOString().substring(0, 16); 
+        document.getElementById("modalAppointmentStart").value = startValue;
+        
+        document.getElementById("modalAppointmentEnd").value = appointment.end;
+        
+        document.getElementById("appointmentModal").style.display = "block";
+    }
+
+    async function updateAppointment() { 
+        const appointmentId = currentAppointmentId;
+        const clientName = document.getElementById("modalAppointmentClient").value.trim();
+        const serviceId = document.getElementById("modalAppointmentService").value;
+        const startStrLocal = document.getElementById("modalAppointmentStart").value;
+        const price = parseFloat(document.getElementById("modalAppointmentPrice").value) || 0;
+        const notes = document.getElementById("modalAppointmentNotes").value.trim();
+        
+        if (!clientName || !serviceId || !startStrLocal) {
+            alert("Cliente, Servizio e Orario sono obbligatori.");
+            return;
+        }
+
+        const service = servicesMap[serviceId];
+        if (!service) {
+            alert("Servizio non valido.");
+            return;
+        }
+        
+        const startISO = new Date(startStrLocal).toISOString(); 
+        const endISO = calculateAppointmentEnd(startStrLocal, service.duration);
+
+
+        // 1. Controllo Conflitto
+        const isConflict = await checkAppointmentConflict(appointmentId, startISO, endISO);
+        if (isConflict) {
+            if (!confirm("Attenzione: Conflitto di orario rilevato! Vuoi comunque salvare le modifiche?")) {
+                return;
+            }
+        }
+        
+        try {
+            const appointmentRef = doc(db, "appointments", appointmentId);
+            await updateDoc(appointmentRef, {
+                clientName: clientName, 
+                serviceId: serviceId,
+                start: startISO,
+                end: endISO,
+                price: price,
+                notes: notes
+            });
+            
+            alert(`Appuntamento di ${clientName} aggiornato con successo.`);
+            closeAppointmentModal();
+            await loadAppointments();
+
+        } catch (e) {
+            console.error("Errore nell'aggiornamento dell'appuntamento:", e);
+            alert("Errore nell'aggiornamento dell'appuntamento.");
+        }
+    }
+
+    async function updateAppointmentTime(appointmentId, newStart, newEnd) { 
+        try {
+            const appointmentRef = doc(db, "appointments", appointmentId);
+            await updateDoc(appointmentRef, {
+                start: newStart,
+                end: newEnd
+            });
+            await loadAppointments();
+            return true;
+
+        } catch (e) {
+            console.error("Errore nell'aggiornamento dell'orario:", e);
+            await loadAppointments(); 
+            return false;
+        }
+    }
+
+    async function deleteAppointment() { 
+        const appointmentId = currentAppointmentId;
+        const appointment = appointmentsListData.find(a => a.id === appointmentId);
+
+        if (!appointment || !confirm(`Sei sicuro di voler eliminare l'appuntamento di ${appointment.clientName}?`)) {
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, "appointments", appointmentId));
+            alert("Appuntamento eliminato.");
+            closeAppointmentModal();
+            await loadAppointments();
+
+        } catch (e) {
+            console.error("Errore nell'eliminazione dell'appuntamento:", e);
+            alert("Errore nell'eliminazione dell'appuntamento.");
+        }
+    }
+
+    function closeAppointmentModal() { 
+        document.getElementById("appointmentModal").style.display = "none";
+        currentAppointmentId = null;
+    }
+
+
+    // ----------------------------------------------------------------------------------
+    // --- INIZIALIZZAZIONE E EXPORT ---
+    // ----------------------------------------------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupDefaultAdmin();
+        checkAuthentication();
+        
+        const calendarEl = document.getElementById('calendar');
+        if (calendarEl) {
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'it',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay' 
+                },
+                slotMinTime: '08:00:00', 
+                slotMaxTime: '20:00:00',
+                slotDuration: '00:15:00',
+                nowIndicator: true,
+                editable: true,
+                selectable: true, 
+                selectMirror: true,
+                allDaySlot: false,
+                events: [],
+                
+                select: function(info) {
+                    if (info.view.type === 'dayGridMonth' || info.allDay) {
+                        calendar.changeView('timeGridDay', info.startStr);
+                        calendar.unselect(); 
+                        return;
+                    }
+                    
+                    const selectedService = document.getElementById('appointmentService').value;
+                    
+                    if (!selectedService) {
+                        alert("Seleziona prima un servizio per calcolare la durata.");
+                        calendar.unselect();
+                        return;
+                    }
+                    
+                    document.getElementById("appointmentClient").value = '';
+                    document.getElementById("appointmentPhone").value = ''; 
+                    document.getElementById("appointmentStart").value = info.startStr.substring(0, 16); 
+                    document.getElementById("appointmentNotes").value = '';
+                    
+                    calendar.unselect(); 
+                },
+
+                eventChange: async function(info) {
+                    const oldEventData = appointmentsListData.find(a => a.id === info.event.id);
+                    const service = servicesMap[oldEventData.serviceId];
+                    if (!service) {
+                        alert("Servizio non trovato. Annullamento spostamento.");
+                        info.revert();
+                        return;
+                    }
+                    
+                    const newStart = info.event.start.toISOString();
+                    const newEnd = calculateAppointmentEnd(newStart, service.duration);
+                    
+                    const isConflict = await checkAppointmentConflict(info.event.id, newStart, newEnd);
+                    
+                    if (isConflict) {
+                        alert("Conflitto di orario rilevato! Riporta l'appuntamento alla sua posizione originale.");
+                        info.revert(); 
+                        return;
+                    }
+                    
+                    const confirmed = confirm(`Sei sicuro di voler spostare l'appuntamento di ${info.event.title} a ${new Date(newStart).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}?`);
+                    
+                    if (confirmed) {
+                        await updateAppointmentTime(info.event.id, newStart, newEnd);
+                    } else {
+                        info.revert();
+                    }
+                },
+
+                eventClick: function(info) {
+                    openAppointmentModal(info.event.id);
+                },
+                
+                eventDidMount: function(info) {
+                    if (info.event.extendedProps.conflict) {
+                        info.el.classList.add('event-conflict');
+                    }
+                }
+            });
+            calendar.render();
+        }
+        
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+            if (event.target === document.getElementById("menuOverlay")) {
+                closeSideMenu();
+            }
+        }
+    });
+
+    // Esposizione delle funzioni globali per l'HTML 
+    window.login = login;
+    window.logout = logout;
+    window.changeView = changeView;
+    window.openSideMenu = openSideMenu;
+    window.closeSideMenu = closeSideMenu;
+
+    // Funzioni CRUD Clienti
+    window.addClient = addClient;
+    window.openClientModal = openClientModal;
+    window.closeClientModal = closeClientModal;
+    window.editClient = editClient;
+    window.deleteClient = deleteClient;
+    window.filterClientAddressBook = filterClientAddressBook;
+
+    // Funzioni CRUD Servizi
+    window.addService = addService;
+    window.openServiceModal = openServiceModal;
+    window.closeServiceModal = closeServiceModal;
+    window.editService = editService;
+    window.deleteService = deleteService;
+
+    // Funzioni Appuntamenti
+    window.addAppointment = addAppointment;
+    window.updateAppointment = updateAppointment;
+    window.deleteAppointment = deleteAppointment;
+
+    // Funzioni Admin
+    window.createUser = createUser;
+    window.openUserModal = openUserModal;
+    window.closeUserModal = closeUserModal;
+    window.updateUser = updateUser;
+    window.deleteUser = deleteUser;
+
+
+  </script>
+</head>
+<body>
+    
+    <div class="nav-header" style="display: none;" id="mainNavBar">
+        <button id="menuToggle" onclick="openSideMenu()">☰</button>
+        <a href="#" class="app-title" onclick="changeView('section_gestione'); return false;">Fashion Hair</a>
+    </div>
+
+    <div id="sideMenu" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSideMenu()">&times;</a>
+        
+        <a href="#" onclick="changeView('section_gestione');">📅 Appuntamenti</a>
+        <a href="#" onclick="changeView('section_clienti');">👤 Gestione Clienti</a>
+        <a href="#" onclick="changeView('section_servizi');">✂️ Gestione Servizi</a>
+        
+        <a href="#" id="adminMenuOption" onclick="changeView('section_admin');" style="display:none;">🗂️ Pannello Admin</a>
+        
+        <hr style="border-top: 1px solid #333; margin: 15px 0;">
+        
+        <button id="menuLogoutButton" onclick="logout()">➡️ Logout</button>
+    </div>
+    
+    <div id="menuOverlay" onclick="closeSideMenu()"></div>
+
+
+    <div id="loginContainer">
+        <div id="loginBox">
+            <h1>💇 Login Fashion Hair</h1>
+            <input type="text" id="loginUsername" placeholder="Nome Utente (es. admin)" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <p id="loginMessage"></p>
+            <button onclick="login()">Accedi</button>
+        </div>
+    </div>
+
+    <div id="appContent" style="display: none;">
+        
+        <div id="section_gestione" class="main-section">
+            <h2>✏️ Nuovo Appuntamento</h2>
+             <div class="container">
+                <div class="block">
+                    
+                    <label for="appointmentClient">Cliente:</label>
+                    <input type="text" id="appointmentClient" list="clientNames" placeholder="Nome Cliente" required>
+                    <datalist id="clientNames">
+                        </datalist>
+
+                    <label for="appointmentPhone">Telefono (per nuovo cliente):</label>
+                    <input type="tel" id="appointmentPhone" placeholder="Numero di Telefono (opzionale)">
+
+                    <label for="appointmentService">Servizio:</label>
+                    <select id="appointmentService" required>
+                        <option value="">-- Seleziona Servizio --</option>
+                        </select>
+
+                    <div class="flex-row">
+                        <div style="flex: 1;">
+                            <label for="appointmentStart">Orario Inizio:</label>
+                            <input type="datetime-local" id="appointmentStart" required>
+                        </div>
+                    </div>
+                    
+                    <label for="appointmentNotes">Note Appuntamento/Cliente:</label>
+                    <textarea id="appointmentNotes" placeholder="Note speciali (colore, allergie, ecc.). Se il cliente è nuovo, queste diventano le note in rubrica."></textarea>
+
+                    <button onclick="addAppointment()">Aggiungi Appuntamento</button>
+                    
+                    <hr>
+                </div>
+            </div>
+            
+            <hr>
+            <div id='calendar'></div>
+
+        </div>
+
+        <div id="section_clienti" class="main-section" style="display: none;">
+            <h2>👤 Rubrica e Anagrafica Clienti</h2>
+            <div class="container">
+                <div class="block">
+                    <h3>➕ Aggiungi Nuovo Cliente</h3>
+                    <input type="text" id="newClient" placeholder="Nome Cliente (es. Maria Rossi)" required>
+                    <input type="tel" id="clientPhone" placeholder="Telefono">
+                    <textarea id="clientNotes" placeholder="Note generiche cliente"></textarea>
+                    <button onclick="addClient()">Aggiungi Cliente</button>
+                </div>
+
+                <div class="block">
+                    <h3>📚 Lista Clienti Esistenti</h3>
+                    <input type="text" id="clientSearchInput" placeholder="Cerca per nome o telefono..." onkeyup="filterClientAddressBook()" style="margin-bottom: 10px;">
+                    
+                    <div id="clientListContainer" class="list-container">
+                        <p>Caricamento clienti...</p>
+                    </div>
+                    <small>Clicca sul nome per modificare i dati o vedere lo storico.</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="section_servizi" class="main-section" style="display: none;">
+            <h2>✂️ Tariffe e Servizi</h2>
+            <div class="container">
+                <div class="block">
+                    <h3>➕ Aggiungi Nuovo Servizio</h3>
+                    <input type="text" id="newService" placeholder="Nome Servizio (es. Taglio Donna)" required>
+                    <input type="number" id="serviceDuration" placeholder="Durata (minuti)" required min="5">
+                    <input type="number" id="servicePrice" placeholder="Prezzo (€) (opzionale)" min="0" step="0.01">
+                    <button onclick="addService()">Aggiungi Servizio</button>
+                </div>
+
+                <div class="block">
+                    <h3>📋 Lista Servizi</h3>
+                    <div id="serviceListContainer" class="list-container">
+                        <p>Caricamento servizi...</p>
+                    </div>
+                    <small>Clicca sul servizio per modificarne durata e prezzo.</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="section_admin" class="main-section" style="display: none;">
+            <h1>🗂️ Pannello di Amministrazione</h1>
+
+            <div class="container">
+                <div class="block">
+                    <h2>➕ Aggiungi Nuovo Utente</h2>
+                    <input type="text" id="newAuthUsername" placeholder="Nome Utente (es. mariarossi)" required>
+                    <input type="password" id="newAuthPassword" placeholder="Password Iniziale" required>
+                    <button onclick="createUser()">Crea Utente</button>
+                </div>
+                
+                <div class="block">
+                    <h2>👥 Gestione Utenti</h2>
+                    <div id="userListContainer" class="list-container">
+                        <p>Caricamento utenti...</p>
+                    </div>
+                    <small>Clicca su un utente per modificare o eliminare.</small>
+                </div>
+            </div>
+            
+            <hr>
+        </div>
+
+
+    </div> 
+
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeClientModal()">&times;</span>
+            <h2 id="modalClientTitle">Modifica Cliente</h2>
+
+            <input type="hidden" id="modalClientId">
+            
+            <label for="modalClientName">Nome Cliente:</label>
+            <input type="text" id="modalClientName" required>
+
+            <label for="modalClientPhone">Telefono:</label>
+            <input type="tel" id="modalClientPhone">
+
+            <label for="modalClientNotes">Note Cliente:</label>
+            <textarea id="modalClientNotes"></textarea>
+
+            <h3>Storico Appuntamenti</h3>
+            <div id="appointmentsHistory" class="appointments-history">
+                </div>
+
+            <button id="modalClientEditButton" onclick="editClient(document.getElementById('modalClientId').value)">Salva Modifiche</button>
+            <button id="modalClientDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Cliente</button>
+        </div>
+    </div>
+
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeServiceModal()">&times;</span>
+            <h2 id="modalServiceNameTitle">Modifica Servizio</h2>
+
+            <input type="text" id="modalServiceName" readonly> 
+
+            <label for="modalServiceDuration">Durata (minuti):</label>
+            <input type="number" id="modalServiceDuration" required min="5">
+
+            <label for="modalServicePrice">Prezzo (€):</label>
+            <input type="number" id="modalServicePrice" min="0" step="0.01">
+
+            <button id="modalServiceEditButton" onclick="editService(currentServiceId)">Salva Modifiche</button>
+            <button id="modalServiceDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Servizio</button>
+        </div>
+    </div>
+    
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAppointmentModal()">&times;</span>
+            <h2 id="modalAppointmentTitle">Modifica Appuntamento</h2>
+
+            <input type="hidden" id="modalAppointmentId">
+
+            <label for="modalAppointmentClient">Cliente:</label>
+            <input type="text" id="modalAppointmentClient" required readonly>
+
+            <label for="modalAppointmentService">Servizio:</label>
+            <select id="modalAppointmentService" required>
+                </select>
+            
+            <div class="flex-row">
+                <div style="flex: 1;">
+                    <label for="modalAppointmentStart">Inizio:</label>
+                    <input type="datetime-local" id="modalAppointmentStart" required>
+                </div>
+                <input type="hidden" id="modalAppointmentEnd"> 
+            </div>
+
+            <label for="modalAppointmentPrice">Prezzo (€):</label>
+            <input type="number" id="modalAppointmentPrice" min="0" step="0.01">
+
+            <label for="modalAppointmentNotes">Note Appuntamento:</label>
+            <textarea id="modalAppointmentNotes"></textarea>
+            
+            <small style="margin-top: 10px; display: block;">**L'orario di fine viene ricalcolato dal sistema in base alla durata del servizio.**</small>
+
+            <button id="modalAppointmentEditButton" onclick="updateAppointment()">Salva Modifiche</button>
+            <button id="modalAppointmentDeleteButton" class="btn-delete" style="margin-top: 5px;" onclick="deleteAppointment()">Elimina Appuntamento</button>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h2 id="modalUserTitle">Modifica Utente</h2>
+
+            <input type="hidden" id="modalUserId">
+
+            <label for="modalUsername">Nome Utente (ID):</label>
+            <input type="text" id="modalUsername" readonly>
+
+            <label for="modalUserPassword">Password:</label>
+            <input type="text" id="modalUserPassword" required>
+            
+            <p id="adminMessage" style="color: var(--delete-color); font-weight: bold;"></p>
+
+            <div id="adminToggleContainer" class="switch-container">
+                <span>Accesso Amministratore (Admin):</span>
+                <label class="switch">
+                    <input type="checkbox" id="adminToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button id="modalUserEditButton" onclick="updateUser()">Salva Modifiche</button>
+            <button id="modalUserDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Utente</button>
+        </div>
+    </div>
+
+</body>
+</html>
