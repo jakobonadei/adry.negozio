@@ -239,7 +239,7 @@
         cursor: pointer;
         z-index: 90;
         transition: background-color 0.3s, transform 0.3s;
-        display: none; /* Inizialmente nascosto, mostrato solo nella vista gestione */
+        display: none; 
     }
     .fab:hover {
         background-color: #17a673;
@@ -248,7 +248,7 @@
     .fab i {
         vertical-align: middle;
         position: relative;
-        top: -2px; /* Aggiusta allineamento icona */
+        top: -2px; 
     }
 
 
@@ -282,7 +282,7 @@
         text-align: left;
         margin-top: 0;
         line-height: 1; 
-        display: none; /* Nascosto di default, mostrato su mobile */
+        display: none; 
     }
     #menuToggle:hover {
         opacity: 0.8;
@@ -296,7 +296,7 @@
         z-index: 10; 
         top: 0;
         left: 0;
-        background-color: #2c3e50; /* Sfondo scuro per il menu */
+        background-color: #2c3e50; 
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
@@ -307,7 +307,7 @@
         padding: 15px 8px 15px 32px;
         text-decoration: none;
         font-size: 1.1rem; 
-        color: #ecf0f1; /* Testo chiaro */
+        color: #ecf0f1; 
         display: block;
         transition: 0.3s;
         background: none;
@@ -319,7 +319,7 @@
     }
     
     #sideMenu a:hover, #sideMenu button:hover {
-        background-color: #34495e; /* Colore più scuro all'hover */
+        background-color: #34495e; 
         color: #ffffff;
     }
     
@@ -343,11 +343,11 @@
         z-index: 9;
         display: none;
     }
-    /* Desktop Navigation (per schermi > 768px) */
+    /* Desktop Navigation */
     .desktop-nav {
         display: flex;
         align-items: center;
-        margin-left: auto; /* Sposta a destra */
+        margin-left: auto; 
         gap: 20px;
     }
     .desktop-nav a, .desktop-nav button {
@@ -389,7 +389,6 @@
 
     /* ⭐ NUOVI STILI AGGIUNTI PER CALENDARIO ⭐ */
     
-    /* Stile per gli eventi in modalità griglia (dayGrid) */
     .fc-event {
         background-color: var(--primary-color); 
         color: white; 
@@ -402,7 +401,6 @@
         margin-bottom: 2px;
     }
     
-    /* Stile per gli eventi in modalità orario (timeGrid) */
     .fc-timegrid-event {
         background-color: var(--primary-color) !important; 
         color: white !important; 
@@ -414,15 +412,13 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
-    /* Stile per eventi in conflitto (sovrapposti) */
     .event-conflict {
         background-color: var(--danger-color) !important; 
         border-color: var(--danger-color) !important;
     }
     
-    /* Migliora l'aspetto delle celle del calendario */
     .fc-day-other .fc-daygrid-day-number {
-        opacity: 0.6; /* Rende le date del mese precedente/successivo più chiare */
+        opacity: 0.6; 
         color: var(--light-text-color);
     }
     .fc-col-header-cell {
@@ -440,7 +436,6 @@
         font-size: 1.1rem;
     }
     
-    /* Rende il nome del giorno cliccabile in TimeGrid Week */
     .fc-timegrid-col-header-cushion {
         cursor: pointer;
         transition: background-color 0.1s;
@@ -461,7 +456,7 @@
         font-weight: 500;
         transition: all 0.2s ease-in-out;
         box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
-        margin: 0 4px; /* Aumenta lo spazio tra i bottoni */
+        margin: 0 4px; 
     }
     .fc .fc-button-primary:hover {
         background-color: #2e59d9; 
@@ -522,7 +517,7 @@
     }
     
     /* --------------------------
-       RESPONSIVITÀ PER SMARTPHONE (TASTI E CALENDARIO)
+       RESPONSIVITÀ PER SMARTPHONE
        -------------------------- */
     @media (max-width: 768px) {
         body { padding-top: 60px; } 
@@ -533,11 +528,10 @@
         .block { min-width: 100%; padding: 15px; }
         .modal-content { width: 95%; margin: 5% auto; padding: 15px; }
         
-        /* Mostra Hamburger, nasconde desktop nav */
         #menuToggle { display: block; }
         .desktop-nav { display: none; }
         
-        /* ⭐ OTTIMIZZAZIONE TASTI FULLCALENDAR PER MOBILE (RISOLVE SOVRAPPOSIZIONE) ⭐ */
+        /* ⭐ FIX: OTTIMIZZAZIONE TASTI FULLCALENDAR PER MOBILE ⭐ */
         .fc-toolbar {
             flex-direction: column; 
             align-items: flex-start;
@@ -547,7 +541,7 @@
             width: 100%;
             display: flex; 
             justify-content: space-between; 
-            flex-wrap: wrap; /* Permetti ai bottoni di andare a capo */
+            flex-wrap: wrap; 
         }
         .fc-toolbar-chunk:nth-child(1) { /* Left chunk: prev, next */
             order: -1; 
@@ -570,16 +564,15 @@
         .fc .fc-button-primary {
             padding: 6px 10px;
             font-size: 0.85rem;
-            margin: 3px; /* Riduci margine su mobile */
+            margin: 3px; 
         }
         .fc-toolbar-title {
             font-size: 1.4rem !important;
         }
+        /* ⭐ FINE FIX CALENDARIO MOBILE ⭐ */
         
-        /* Menu laterale full screen */
         #sideMenu { width: 80%; max-width: 300px; }
 
-        /* Mostra FAB solo per la gestione del calendario */
         #fabNewAppointment {
             display: flex;
             justify-content: center;
@@ -713,8 +706,8 @@
     small {
         font-size: 0.85rem;
         color: var(--light-text-color);
-        display: block; /* Ensures it takes its own line */
-        margin-top: -10px; /* Adjust spacing with input above */
+        display: block; 
+        margin-top: -10px; 
         margin-bottom: 10px;
     }
 
@@ -748,7 +741,6 @@
     
     let currentUser = null; 
     
-    // Variabili per l'editing modale
     let currentAppointmentId = null;
     let currentClientId = null;
     let currentServiceId = null; 
@@ -864,19 +856,16 @@
         const clientsSectionId = 'section_clienti';
         const fabButton = document.getElementById('fabNewAppointment');
         
-        // Gestione visibilità FAB
-        if (viewId === mainSectionId) {
+        if (viewId === mainSectionId && window.innerWidth <= 768) {
             fabButton.style.display = 'flex'; 
         } else {
             fabButton.style.display = 'none';
         }
 
-        // Se un non-admin cerca di accedere al pannello admin
         if (viewId === adminSectionId && (!currentUser || !currentUser.isAdmin)) {
             viewId = mainSectionId;
         }
         
-        // ⭐ AGGIORNAMENTO LISTE QUANDO SI CAMBIA VISTA ⭐
         if (viewId === clientsSectionId) {
             document.getElementById("clientSearchInput").value = ''; 
             loadClientAddressBook(''); 
@@ -933,7 +922,6 @@
             appContent.style.display = 'block';
             navBar.style.display = 'flex'; 
             
-            // Gestione visibilità opzioni admin per desktop nav
             const adminDesktopOption = document.getElementById('adminDesktopOption');
             if (currentUser.isAdmin) {
                 adminDesktopOption.style.display = 'block';
@@ -941,15 +929,14 @@
                 adminDesktopOption.style.display = 'none';
             }
 
-            // Mostra o nasconde FAB a seconda della vista iniziale
-            if (window.innerWidth <= 768) { // Solo su mobile
+            if (window.innerWidth <= 768) { 
                 menuToggle.style.display = 'block';
                 desktopNav.style.display = 'none';
                 document.getElementById('fabNewAppointment').style.display = 'flex';
             } else {
                 menuToggle.style.display = 'none';
                 desktopNav.style.display = 'flex';
-                document.getElementById('fabNewAppointment').style.display = 'none'; // Nascondi FAB su desktop
+                document.getElementById('fabNewAppointment').style.display = 'none'; 
             }
 
             loadClientsAndServices();
@@ -1127,7 +1114,6 @@
     // --- FUNZIONI CRUD CLIENTS ---
     // ----------------------------------------------------------------------------------
 
-    // ⭐ LOGICA DI CARICAMENTO CLIENTS/SERVICES E POPOLAMENTO SELECT ⭐
     async function loadClientsAndServices() { 
         clientsListData = [];
         servicesListData = [];
@@ -1151,11 +1137,9 @@
             // 2. Carica Servizi
             const servicesSnap = await getDocs(query(collection(db, "services"), orderBy("name")));
             
-            // Selettore Modale Modifica Appuntamento
             const modalServiceSelect = document.getElementById("modalAppointmentService"); 
             modalServiceSelect.innerHTML = '';
 
-            // Selettore Modale Nuovo Appuntamento (nuovaAppointmentModal)
             const newModalServiceSelect = document.getElementById("modalNewService"); 
             newModalServiceSelect.innerHTML = '<option value="">-- Seleziona Servizio --</option>'; 
             
@@ -1176,7 +1160,6 @@
                 newModalServiceSelect.appendChild(optionNewModal);
             });
 
-            // 3. AGGIORNA LE VISTE IN BASE AI DATI CARICATI
             if (document.getElementById('section_clienti').style.display === 'block') {
                  loadClientAddressBook();
             }
@@ -1189,7 +1172,6 @@
             console.error("Errore nel caricamento di clienti/servizi:", e);
         }
     }
-    // ⭐ FINE LOGICA DI CARICAMENTO CLIENTS/SERVICES ⭐
 
     async function addClient() { 
         const name = document.getElementById("newClient").value.trim();
@@ -1267,7 +1249,6 @@
                 notes: newNotes
             });
             
-            // Aggiorna tutti gli appuntamenti esistenti con il nuovo nome 
             if (oldClient && oldClient.name !== newName) {
                 const q = query(collection(db, "appointments"), where("clientName", "==", oldClient.name));
                 const snap = await getDocs(q);
@@ -1451,7 +1432,6 @@
         }
     }
 
-    // ⭐ LOGICA DI VISUALIZZAZIONE LISTA SERVIZI ⭐
     function loadServiceList() { 
         const container = document.getElementById("serviceListContainer");
         container.innerHTML = ''; 
@@ -1477,7 +1457,6 @@
             container.appendChild(item);
         });
     }
-    // ⭐ FINE LOGICA DI VISUALIZZAZIONE LISTA SERVIZI ⭐
 
 
     async function openServiceModal(serviceId) { 
@@ -1564,7 +1543,6 @@
             appointmentsListData = [];
             let events = [];
             
-            // Passaggio 1: Raccogli i dati
             querySnapshot.docs.forEach(doc => {
                 const data = doc.data();
                 appointmentsListData.push({ id: doc.id, ...data });
@@ -1634,7 +1612,6 @@
 
     // ⭐ FUNZIONE PER AGGIUNGERE APPUNTAMENTO DALLA MODALE POP-UP ⭐
     async function addNewAppointmentFromModal() { 
-        // Usa i nuovi ID della modale
         const clientName = document.getElementById("modalNewClient").value.trim();
         const clientPhone = document.getElementById("modalNewPhone").value.trim();
         const serviceId = document.getElementById("modalNewService").value;
@@ -1694,7 +1671,6 @@
 
             await addDoc(collection(db, "appointments"), newAppointment);
             
-            // Pulisci il form e chiudi la modale
             document.getElementById("modalNewClient").value = '';
             document.getElementById("modalNewPhone").value = '';
             document.getElementById("modalNewService").value = '';
@@ -1714,7 +1690,6 @@
     function closeNewAppointmentModal() {
         document.getElementById("newAppointmentModal").style.display = "none";
     }
-    // ⭐ FINE NUOVE FUNZIONI AGGIUNTE ⭐
 
     async function openAppointmentModal(appointmentId) { 
         currentAppointmentId = appointmentId;
@@ -1847,15 +1822,14 @@
         const calendarEl = document.getElementById('calendar');
         if (calendarEl) {
             calendar = new FullCalendar.Calendar(calendarEl, {
-                // ⭐ CONFIGURAZIONE CALENDARIO AGGIORNATA ⭐
                 initialView: 'dayGridWeek', 
                 locale: 'it',
                 timeZone: 'local', 
                 
                 headerToolbar: {
-                    left: 'prev,next', // Freccette P/N a sinistra
-                    center: 'title',   // Titolo al centro
-                    right: 'today dayGridWeek,timeGridDay' // Oggi + Viste ottimizzate per mobile (Month rimosso)
+                    left: 'prev,next', 
+                    center: 'title',   
+                    right: 'today dayGridWeek,timeGridDay' 
                 },
                 
                 slotMinTime: '08:00:00', 
@@ -1868,18 +1842,16 @@
                 allDaySlot: false,
                 events: [],
                 
-                // ⭐ FUNZIONE CLICK/TAP SULLE DATE/GIORNI (per passare alla vista giorno) ⭐
+                // ⭐ FIX CALENDARIO MOBILE: CLICK/TAP SULLE DATE/GIORNI ⭐
                 dateClick: function(info) {
-                    // Controlla se siamo in una vista di tipo "griglia" o "settimana"
                     if (info.view.type.includes('dayGrid') || info.view.type.includes('timeGridWeek')) {
-                        // Passa alla vista giorno specifico e imposta la data cliccata
+                        // Passa alla vista giorno specifico
                         calendar.changeView('timeGridDay', info.dateStr);
                     }
-                    // Se clicchi sulla griglia oraria di timeGridDay, viene gestito da 'select' per aprire la modale
                 },
-                // ⭐ FINE FUNZIONE CLICK/TAP ⭐
 
                 select: function(info) {
+                    // Previene la selezione nella vista mese o su slot "tutto il giorno"
                     if (info.view.type === 'dayGridMonth' || info.allDay) {
                         calendar.unselect(); 
                         return;
@@ -1952,22 +1924,24 @@
             }
         }
         
-        // Listener per il resize della finestra per gestire la navigazione
+        // Listener per il resize della finestra per gestire la navigazione e il calendario
         window.addEventListener('resize', () => {
             if (currentUser) {
                 const desktopNav = document.getElementById('desktopNav');
                 const menuToggle = document.getElementById('menuToggle');
+                const fabButton = document.getElementById('fabNewAppointment');
+                
                 if (window.innerWidth <= 768) {
                     menuToggle.style.display = 'block';
                     desktopNav.style.display = 'none';
                     if (document.getElementById('section_gestione').style.display === 'block') {
-                        document.getElementById('fabNewAppointment').style.display = 'flex';
+                        fabButton.style.display = 'flex';
                     }
                 } else {
                     menuToggle.style.display = 'none';
                     desktopNav.style.display = 'flex';
-                    document.getElementById('fabNewAppointment').style.display = 'none';
-                    closeSideMenu(); // Chiudi il menu hamburger se si allarga lo schermo
+                    fabButton.style.display = 'none';
+                    closeSideMenu(); 
                 }
             }
             if (calendar) calendar.updateSize();
@@ -1981,7 +1955,6 @@
     window.openSideMenu = openSideMenu;
     window.closeSideMenu = closeSideMenu;
 
-    // Funzioni CRUD Clienti
     window.addClient = addClient;
     window.openClientModal = openClientModal;
     window.closeClientModal = closeClientModal;
@@ -1989,21 +1962,18 @@
     window.deleteClient = deleteClient;
     window.filterClientAddressBook = filterClientAddressBook;
 
-    // Funzioni CRUD Servizi
     window.addService = addService;
     window.openServiceModal = openServiceModal;
     window.closeServiceModal = closeServiceModal;
     window.editService = editService;
     window.deleteService = deleteService;
 
-    // Funzioni Appuntamenti
     window.addNewAppointmentFromModal = addNewAppointmentFromModal;
     window.closeNewAppointmentModal = closeNewAppointmentModal;     
     window.updateAppointment = updateAppointment;
     window.deleteAppointment = deleteAppointment;
-    window.openAppointmentModal = openAppointmentModal; // Espongo per FC eventClick
+    window.openAppointmentModal = openAppointmentModal; 
 
-    // Funzioni Admin
     window.createUser = createUser;
     window.openUserModal = openUserModal;
     window.closeUserModal = closeUserModal;
@@ -2127,6 +2097,7 @@
             </div>
         </div>
 
+        
         <div id="fabNewAppointment" class="fab" onclick="document.getElementById('newAppointmentModal').style.display = 'block'; document.getElementById('modalNewStart').value = new Date().toISOString().substring(0, 16);">
             <i class="fas fa-plus"></i>
         </div>
