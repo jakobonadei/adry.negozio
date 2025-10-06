@@ -1,8 +1,10 @@
 {
   "name": "Fashion Hair",
-  "short_name": "FH MGR",
+  "short_name": "Fashion Hair",
   "description": "Gestione Appuntamenti e Clienti per Salone Fashion Hair.",
-  "start_url": "/index.html",
+  
+  "start_url": "/adry.negozio/", 
+  
   "display": "standalone",
   "background_color": "#8a2be2",
   "theme_color": "#8a2be2",
