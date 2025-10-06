@@ -9,59 +9,77 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="FashionHair">
-  <meta name="theme-color" content="#8a2be2"> 
+  <meta name="theme-color" content="#4e73df"> 
+
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
   <style>
     /* --------------------------
-       STILI GENERALI E LAYOUT
+       NUOVI STILI GENERALI E LAYOUT
        -------------------------- */
     :root {
-      --primary-color: #8a2be2; /* Viola brillante */
-      --secondary-color: #c8a2c8; /* Lilla (per eventi) */
-      --text-color: #333;
-      --light-bg: #f7f7f7;
-      --card-bg: #ffffff;
-      --border-color: #e0e0e0;
-      --delete-color: #dc3545;
-      --edit-color: #ffc107;
-      --success-color: #28a745; /* Verde per conflitto */
+      /* ⭐ NUOVA PALETTE COLORI ⭐ */
+      --primary-color: #4e73df;  /* Un blu più deciso */
+      --secondary-color: #f8f9fc; /* Sfondo chiaro soft */
+      --accent-color: #1cc88a;   /* Verde per successi/azioni positive */
+      --danger-color: #e74a3b;   /* Rosso per eliminazioni/errori */
+      --warning-color: #f6c23e;  /* Giallo per avvisi */
+      --text-color: #5a5c69;     /* Grigio scuro per il testo */
+      --light-text-color: #858796; /* Grigio più chiaro */
+      --bg-color: #f8f9fc;       /* Sfondo principale */
+      --card-bg: #ffffff;        /* Sfondo dei blocchi */
+      --border-color: #e3e6f0;   /* Bordo leggero */
+      --shadow-light: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); /* Ombra leggera */
     }
 
     body { 
-        font-family: 'Arial', sans-serif; 
+        font-family: 'Roboto', sans-serif; 
         margin: 0; 
-        padding: 20px;
-        background: var(--light-bg); 
+        padding: 0;
+        background: var(--bg-color); 
         color: var(--text-color);
-        padding-top: 70px; /* Spazio per la barra di navigazione fissa */
+        padding-top: 60px; /* Spazio per la barra di navigazione fissa */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
     
     h1 { 
         font-size: 2rem; 
-        color: var(--primary-color);
-        border-bottom: 2px solid var(--secondary-color);
-        padding-bottom: 10px;
-        margin-bottom: 20px;
+        color: var(--text-color);
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        text-align: center;
     }
     h2, h3 {
-        color: var(--primary-color);
-        margin-top: 5px;
-        font-size: 1.3rem;
+        color: var(--text-color);
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        font-weight: 500;
     }
-    
     .app-title {
-        font-size: 1.5rem; 
-        color: var(--card-bg); /* Bianco */
+        font-size: 1.6rem; 
+        color: var(--card-bg); 
         text-decoration: none; 
-        font-weight: bold;
+        font-weight: 700;
         transition: color 0.2s;
         cursor: pointer;
     }
     .app-title:hover {
-        color: #f0f0f0;
+        color: rgba(255, 255, 255, 0.8);
     }
 
     /* Contenitori e Blocchi */
+    .content-wrapper {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
     .container { 
         display: flex; 
         gap: 20px; 
@@ -71,11 +89,10 @@
     .block { 
         flex: 1; 
         min-width: 280px;
-        border: 1px solid var(--border-color); 
         background: var(--card-bg); 
-        padding: 15px;
-        border-radius: 10px; 
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        border-radius: 0.35rem; 
+        box-shadow: var(--shadow-light);
     }
     .flex-row {
         display: flex;
@@ -83,16 +100,19 @@
         margin-top: 15px;
     }
     .list-item {
-        padding: 10px; 
-        border-bottom: 1px dashed var(--border-color); 
+        padding: 12px 15px; 
+        border-bottom: 1px solid var(--border-color); 
         transition: background-color 0.2s;
         font-size: 1rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+    .list-item:last-child {
+        border-bottom: none;
+    }
     .list-item:hover {
-        background-color: #f3f3f3;
+        background-color: var(--secondary-color);
         cursor: pointer; 
     }
     .list-item span {
@@ -100,71 +120,137 @@
         cursor: pointer;
     }
     .list-item-actions button {
-        margin: 0 5px;
+        margin-left: 10px;
         width: auto;
-        padding: 5px 10px;
+        padding: 6px 12px;
+        font-size: 0.9rem;
     }
-
+    .list-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        border-radius: 0.25rem;
+    }
 
     /* --------------------------
        FORM E INPUT
        -------------------------- */
     input, select, textarea { 
-        margin: 8px 0; 
-        padding: 10px; 
+        margin-bottom: 15px; 
+        padding: 10px 15px; 
         width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 5px; 
+        border: 1px solid var(--border-color);
+        border-radius: 0.35rem; 
         box-sizing: border-box;
+        font-family: 'Roboto', sans-serif;
+        font-size: 0.9rem;
+        color: var(--text-color);
+    }
+    input::placeholder, textarea::placeholder {
+        color: var(--light-text-color);
+        opacity: 0.8;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
     }
     input[readonly] {
-        background-color: #eee;
-        color: #777;
+        background-color: #f0f2f5;
+        color: var(--light-text-color);
+        cursor: not-allowed;
     }
     textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 90px;
     }
     
-    #appointmentService { 
+    #appointmentService, #modalNewService, #modalAppointmentService { 
         padding: 10px 15px;
-        border-radius: 5px;
-        border: 2px solid var(--primary-color); 
+        border-radius: 0.35rem;
+        border: 1px solid var(--border-color); 
         background-color: var(--card-bg);
         color: var(--text-color);
-        font-size: 1rem;
+        font-size: 0.9rem;
         appearance: none; 
         cursor: pointer;
         box-sizing: border-box;
-        margin: 8px 0;
+        margin-bottom: 15px;
     }
-    #appointmentService:hover {
-        border-color: #6a1a9e;
-        box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+    #appointmentService:hover, #modalNewService:hover, #modalAppointmentService:hover {
+        border-color: var(--primary-color);
     }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: var(--text-color);
+        font-size: 0.9rem;
+    }
+
 
     button { 
         margin-top: 15px;
-        padding: 10px; 
+        padding: 10px 15px; 
         width: 100%; 
         background-color: var(--primary-color); 
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: 0.35rem;
         cursor: pointer;
         font-size: 1rem;
-        transition: background-color 0.3s ease;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
     }
     button:hover {
-        background-color: #6a1a9e;
+        background-color: #2e59d9;
+        transform: translateY(-1px);
+    }
+    button:active {
+        transform: translateY(0);
+        box-shadow: 0 0.05rem 0.1rem 0 rgba(58, 59, 69, 0.2);
     }
     /* Stili specifici per i pulsanti */
-    .btn-delete { background-color: var(--delete-color); }
-    .btn-delete:hover { background-color: #c82333; }
-    .btn-edit { background-color: var(--edit-color); color: var(--text-color); }
-    .btn-edit:hover { background-color: #e0a800; }
-    .btn-secondary { background-color: #6c757d; }
-    .btn-secondary:hover { background-color: #5a6268; }
+    .btn-delete { background-color: var(--danger-color); }
+    .btn-delete:hover { background-color: #d82b1d; }
+    .btn-edit { background-color: var(--warning-color); color: var(--text-color); }
+    .btn-edit:hover { background-color: #f1b72e; }
+    .btn-secondary { background-color: var(--light-text-color); }
+    .btn-secondary:hover { background-color: #727483; }
+    .btn-success { background-color: var(--accent-color); }
+    .btn-success:hover { background-color: #17a673; }
+
+    /* Floating Action Button (FAB) */
+    .fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--accent-color);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 2.5rem;
+        line-height: 60px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        z-index: 90;
+        transition: background-color 0.3s, transform 0.3s;
+        display: none; /* Inizialmente nascosto, mostrato solo nella vista gestione */
+    }
+    .fab:hover {
+        background-color: #17a673;
+        transform: scale(1.05);
+    }
+    .fab i {
+        vertical-align: middle;
+        position: relative;
+        top: -2px; /* Aggiusta allineamento icona */
+    }
+
 
     /* --------------------------
        NAVIGAZIONE HAMBURGER E BARRA FISSA
@@ -174,12 +260,12 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 50px;
+        height: 60px;
         background-color: var(--primary-color);
         display: flex;
         align-items: center;
-        padding: 0 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        padding: 0 20px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         z-index: 5; 
     }
     
@@ -196,6 +282,7 @@
         text-align: left;
         margin-top: 0;
         line-height: 1; 
+        display: none; /* Nascosto di default, mostrato su mobile */
     }
     #menuToggle:hover {
         opacity: 0.8;
@@ -209,7 +296,7 @@
         z-index: 10; 
         top: 0;
         left: 0;
-        background-color: #111;
+        background-color: #2c3e50; /* Sfondo scuro per il menu */
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
@@ -217,10 +304,10 @@
     }
     
     #sideMenu a, #sideMenu button {
-        padding: 8px 8px 8px 32px;
+        padding: 15px 8px 15px 32px;
         text-decoration: none;
-        font-size: 1.2rem; 
-        color: #818181;
+        font-size: 1.1rem; 
+        color: #ecf0f1; /* Testo chiaro */
         display: block;
         transition: 0.3s;
         background: none;
@@ -232,7 +319,8 @@
     }
     
     #sideMenu a:hover, #sideMenu button:hover {
-        color: #f1f1f1;
+        background-color: #34495e; /* Colore più scuro all'hover */
+        color: #ffffff;
     }
     
     #sideMenu .closebtn {
@@ -241,6 +329,7 @@
         right: 25px;
         font-size: 36px;
         margin-left: 50px;
+        color: #ecf0f1;
     }
 
     /* Overlay per click esterno */
@@ -254,19 +343,112 @@
         z-index: 9;
         display: none;
     }
+    /* Desktop Navigation (per schermi > 768px) */
+    .desktop-nav {
+        display: flex;
+        align-items: center;
+        margin-left: auto; /* Sposta a destra */
+        gap: 20px;
+    }
+    .desktop-nav a, .desktop-nav button {
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 8px 15px;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+    .desktop-nav a:hover, .desktop-nav button:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    .desktop-nav button#logoutButton {
+        background-color: var(--danger-color);
+    }
+    .desktop-nav button#logoutButton:hover {
+        background-color: #d82b1d;
+    }
+
 
     /* --------------------------
-       CALENDARIO
+       CALENDARIO (FULLCALENDAR)
        -------------------------- */
     hr { border: 0; height: 1px; background-color: var(--border-color); margin: 20px 0; }
-    #calendar { max-width: 1100px; margin: 20px auto; background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    #calendar { 
+        background: var(--card-bg); 
+        padding: 20px; 
+        border-radius: 0.35rem; 
+        box-shadow: var(--shadow-light); 
+        margin: 20px 0;
+    }
     .fc-event { pointer-events: none; } 
     .fc-timegrid-event { pointer-events: auto; }
 
+    /* ⭐ NUOVI STILI AGGIUNTI PER CALENDARIO ⭐ */
+    
+    /* Stile per gli eventi in modalità griglia (dayGrid) */
+    .fc-event {
+        background-color: var(--primary-color); 
+        color: white; 
+        border: 1px solid var(--primary-color); 
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 2px;
+    }
+    
+    /* Stile per gli eventi in modalità orario (timeGrid) */
+    .fc-timegrid-event {
+        background-color: var(--primary-color) !important; 
+        color: white !important; 
+        border: none !important;
+        opacity: 0.95;
+        font-weight: bold;
+        padding: 6px; 
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
     /* Stile per eventi in conflitto (sovrapposti) */
     .event-conflict {
-        background-color: var(--success-color) !important; 
-        border-color: var(--success-color) !important;
+        background-color: var(--danger-color) !important; 
+        border-color: var(--danger-color) !important;
+    }
+    
+    /* Migliora l'aspetto delle celle del calendario */
+    .fc-day-other .fc-daygrid-day-number {
+        opacity: 0.6; /* Rende le date del mese precedente/successivo più chiare */
+        color: var(--light-text-color);
+    }
+    .fc-col-header-cell {
+        background-color: var(--card-bg); 
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 500;
+        color: var(--text-color);
+    }
+    .fc-timegrid-slot-label {
+        color: var(--light-text-color);
+    }
+    .fc-daygrid-day-number {
+        font-weight: 500;
+        color: var(--text-color);
+        font-size: 1.1rem;
+    }
+    
+    /* Rende il nome del giorno cliccabile in TimeGrid Week */
+    .fc-timegrid-col-header-cushion {
+        cursor: pointer;
+        transition: background-color 0.1s;
+        padding: 8px 0;
+        border-radius: 4px;
+    }
+    .fc-timegrid-col-header-cushion:hover {
+        background-color: var(--secondary-color);
     }
 
     /* STILI FULLCALENDAR (TASTI E WIDGET) */
@@ -274,23 +456,32 @@
         background-color: var(--primary-color);
         border-color: var(--primary-color);
         color: white;
-        border-radius: 8px; 
+        border-radius: 0.35rem; 
         padding: 8px 12px;
-        font-weight: bold;
-        transition: background-color 0.3s, border-color 0.3s;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 0 2px;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
+        margin: 0 4px; /* Aumenta lo spazio tra i bottoni */
     }
-    .fc .fc-button-primary:hover,
-    .fc .fc-button-primary:disabled {
-        background-color: #6a1a9e; 
-        border-color: #6a1a9e;
-        opacity: 0.9;
+    .fc .fc-button-primary:hover {
+        background-color: #2e59d9; 
+        border-color: #2e59d9;
+        transform: translateY(-1px);
+    }
+    .fc .fc-button-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 0.05rem 0.1rem 0 rgba(58, 59, 69, 0.2);
     }
     .fc-prev-button, .fc-next-button {
-        padding: 5px 8px !important;
+        padding: 5px 10px !important;
         font-size: 1.2em !important;
     }
+    .fc-toolbar-title {
+        color: var(--text-color);
+        font-size: 1.8rem !important;
+        font-weight: 700;
+    }
+
 
     /* --------------------------
        LOGIN SCREEN
@@ -299,31 +490,54 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 80vh;
+        height: 100vh;
         flex-direction: column;
         padding-top: 0; 
+        background-color: var(--primary-color);
     }
     #loginBox {
         background: var(--card-bg);
         padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        border-radius: 0.35rem;
+        box-shadow: var(--shadow-light);
         width: 100%;
-        max-width: 350px;
+        max-width: 380px;
+        text-align: center;
+    }
+    #loginBox h1 {
+        color: var(--primary-color);
+        margin-top: 0;
+        font-size: 2.2rem;
+        border-bottom: none;
+        margin-bottom: 25px;
+    }
+    #loginBox input {
+        margin-bottom: 20px;
+    }
+    #loginMessage {
+        color: var(--danger-color);
+        font-size: 0.9rem;
+        margin-top: -10px;
+        margin-bottom: 10px;
     }
     
     /* --------------------------
-       RESPONSIVITÀ PER SMARTPHONE
-       (CORREZIONE TASTI CALENDARIO MOBILE QUI)
+       RESPONSIVITÀ PER SMARTPHONE (TASTI E CALENDARIO)
        -------------------------- */
     @media (max-width: 768px) {
-        body { padding: 10px; padding-top: 70px; } 
-        h1 { font-size: 1.5rem; }
+        body { padding-top: 60px; } 
+        .content-wrapper { padding: 10px; }
+        h1 { font-size: 1.8rem; }
+        h2 { font-size: 1.3rem; }
         .container { flex-direction: column; }
-        .block { min-width: 100%; }
-        .modal-content { width: 95%; margin: 10% auto; }
+        .block { min-width: 100%; padding: 15px; }
+        .modal-content { width: 95%; margin: 5% auto; padding: 15px; }
         
-        /* ⭐ CORREZIONE FULLCALENDAR TASTI MOBILE ⭐ */
+        /* Mostra Hamburger, nasconde desktop nav */
+        #menuToggle { display: block; }
+        .desktop-nav { display: none; }
+        
+        /* ⭐ OTTIMIZZAZIONE TASTI FULLCALENDAR PER MOBILE (RISOLVE SOVRAPPOSIZIONE) ⭐ */
         .fc-toolbar {
             flex-direction: column; 
             align-items: flex-start;
@@ -331,24 +545,46 @@
         .fc-toolbar-chunk {
             margin-bottom: 8px;
             width: 100%;
-            display: flex; /* Assicura che gli elementi interni usino flex */
-            justify-content: center; /* Centra gli elementi (titolo/bottoni) */
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap; /* Permetti ai bottoni di andare a capo */
         }
-        .fc-toolbar-chunk:nth-child(2) { 
-            order: -1; /* Mette il titolo in alto */
+        .fc-toolbar-chunk:nth-child(1) { /* Left chunk: prev, next */
+            order: -1; 
+            justify-content: flex-start; 
         }
-        .fc-toolbar-chunk:first-child,
-        .fc-toolbar-chunk:last-child {
-            justify-content: space-around; /* Distribuisce i bottoni lungo la larghezza */
+        .fc-toolbar-chunk:nth-child(2) { /* Center chunk: Title */
+            order: -2; 
+            justify-content: center;
+            text-align: center;
+        }
+        .fc-toolbar-chunk:nth-child(3) { /* Right chunk: today, views */
+            order: -3; 
+            justify-content: flex-end; 
+            margin-top: 10px; 
         }
         .fc .fc-button-group {
              flex-wrap: wrap;
              justify-content: center;
         }
-        /* ⭐ FINE CORREZIONE FULLCALENDAR ⭐ */
-
+        .fc .fc-button-primary {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            margin: 3px; /* Riduci margine su mobile */
+        }
+        .fc-toolbar-title {
+            font-size: 1.4rem !important;
+        }
+        
         /* Menu laterale full screen */
         #sideMenu { width: 80%; max-width: 300px; }
+
+        /* Mostra FAB solo per la gestione del calendario */
+        #fabNewAppointment {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
     
     /* --------------------------
@@ -363,36 +599,64 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(0,0,0,0.6);
+        animation: fadeIn 0.3s ease-out;
     }
     .modal-content {
         background-color: #fefefe;
         margin: 5% auto; 
-        padding: 20px;
-        border: 1px solid #888;
+        padding: 25px;
+        border-radius: 0.35rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
         width: 80%; 
-        max-width: 500px;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        max-width: 550px;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
     .close {
         color: #aaa;
         float: right;
-        font-size: 28px;
+        font-size: 30px;
         font-weight: bold;
+        transition: color 0.2s;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        line-height: 1;
     }
     .close:hover,
     .close:focus {
-        color: #000;
+        color: var(--danger-color);
         text-decoration: none;
         cursor: pointer;
     }
+    .modal-content h2 {
+        margin-top: 10px;
+        margin-bottom: 25px;
+        color: var(--primary-color);
+        text-align: center;
+        font-size: 1.8rem;
+    }
     .appointments-history {
-        max-height: 200px;
+        max-height: 250px;
         overflow-y: auto;
         border: 1px solid var(--border-color);
         padding: 10px;
         border-radius: 5px;
+        background-color: var(--secondary-color);
+    }
+    .appointments-history .list-item {
+        padding: 8px 10px;
+        border-bottom: 1px dashed var(--border-color);
+        font-size: 0.9rem;
     }
     
     /* --------------------------
@@ -445,6 +709,15 @@
     input:checked + .slider:before {
         transform: translateX(26px);
     }
+    /* Small text for hints */
+    small {
+        font-size: 0.85rem;
+        color: var(--light-text-color);
+        display: block; /* Ensures it takes its own line */
+        margin-top: -10px; /* Adjust spacing with input above */
+        margin-bottom: 10px;
+    }
+
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
@@ -453,12 +726,12 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // ⚠️ CONFIGURAZIONE FIREBASE (Mantienila come è stata impostata)
+    // ⚠️ CONFIGURAZIONE FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyBMGmWVch2C_ri5_Xm5-LiXVM0lpdaTB_8",
       authDomain: "adry-f721c.firebaseapp.com",
       projectId: "adry-f721c",
-      storageBucket: "adry-f721c.firebaseapp.com", // CORREZIONE: A volte 'storageBucket' necessita di '.app'
+      storageBucket: "adry-f721c.firebaseapp.com",
       messagingSenderId: "154658910845",
       appId: "1:154658910845:web:52dc99217dbe499be82b7b21"
     };
@@ -511,7 +784,7 @@
         const el = document.getElementById(containerId);
         if (el) {
             el.textContent = message;
-            el.style.color = isError ? 'var(--delete-color)' : 'var(--success-color)';
+            el.style.color = isError ? 'var(--danger-color)' : 'var(--accent-color)';
             setTimeout(() => el.textContent = '', 3000);
         }
     }
@@ -589,11 +862,21 @@
         const mainSectionId = 'section_gestione';
         const adminSectionId = 'section_admin';
         const clientsSectionId = 'section_clienti';
+        const fabButton = document.getElementById('fabNewAppointment');
         
+        // Gestione visibilità FAB
+        if (viewId === mainSectionId) {
+            fabButton.style.display = 'flex'; 
+        } else {
+            fabButton.style.display = 'none';
+        }
+
+        // Se un non-admin cerca di accedere al pannello admin
         if (viewId === adminSectionId && (!currentUser || !currentUser.isAdmin)) {
             viewId = mainSectionId;
         }
         
+        // ⭐ AGGIORNAMENTO LISTE QUANDO SI CAMBIA VISTA ⭐
         if (viewId === clientsSectionId) {
             document.getElementById("clientSearchInput").value = ''; 
             loadClientAddressBook(''); 
@@ -641,12 +924,33 @@
         const appContent = document.getElementById('appContent');
         
         const navBar = document.getElementById('mainNavBar');
+        const desktopNav = document.getElementById('desktopNav');
+        const menuToggle = document.getElementById('menuToggle');
 
         if (loggedInUser) {
             currentUser = JSON.parse(loggedInUser);
             loginContainer.style.display = 'none';
             appContent.style.display = 'block';
             navBar.style.display = 'flex'; 
+            
+            // Gestione visibilità opzioni admin per desktop nav
+            const adminDesktopOption = document.getElementById('adminDesktopOption');
+            if (currentUser.isAdmin) {
+                adminDesktopOption.style.display = 'block';
+            } else {
+                adminDesktopOption.style.display = 'none';
+            }
+
+            // Mostra o nasconde FAB a seconda della vista iniziale
+            if (window.innerWidth <= 768) { // Solo su mobile
+                menuToggle.style.display = 'block';
+                desktopNav.style.display = 'none';
+                document.getElementById('fabNewAppointment').style.display = 'flex';
+            } else {
+                menuToggle.style.display = 'none';
+                desktopNav.style.display = 'flex';
+                document.getElementById('fabNewAppointment').style.display = 'none'; // Nascondi FAB su desktop
+            }
 
             loadClientsAndServices();
             loadAppointments();
@@ -658,12 +962,14 @@
             loginContainer.style.display = 'flex';
             appContent.style.display = 'none';
             navBar.style.display = 'none'; 
+            document.getElementById('fabNewAppointment').style.display = 'none';
             
         }
     }
 
 
     // --- FUNZIONI: ADMIN PANEL UTENTI (CRUD UTENTI) ---
+
     async function createUser() { 
         const username = document.getElementById("newAuthUsername").value.trim();
         const password = document.getElementById("newAuthPassword").value.trim();
@@ -674,7 +980,6 @@
         }
         
         try {
-            // Controlla se l'username esiste già (basandosi sul campo username nel database)
             const q = query(collection(db, "users"), where("username", "==", username));
             const snap = await getDocs(q);
 
@@ -702,7 +1007,7 @@
 
     async function loadUserList() { 
         const container = document.getElementById("userListContainer");
-        container.innerHTML = 'Caricamento utenti...';
+        container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Caricamento utenti...</p>';
         
         try {
             const querySnapshot = await getDocs(collection(db, "users"));
@@ -716,20 +1021,20 @@
                 item.innerHTML = `
                     <span onclick="openUserModal('${doc.id}')">${userData.username}${isAdmin}</span>
                     <div class="list-item-actions">
-                        <button class="btn-edit" onclick="openUserModal('${doc.id}')">Modifica</button>
-                        ${userData.username !== currentUser.username ? `<button class="btn-delete" onclick="deleteUser('${doc.id}', '${userData.username}')">Elimina</button>` : ''}
+                        <button class="btn-edit" onclick="openUserModal('${doc.id}')"><i class="fas fa-edit"></i></button>
+                        ${userData.username !== currentUser.username ? `<button class="btn-delete" onclick="deleteUser('${doc.id}', '${userData.username}')"><i class="fas fa-trash-alt"></i></button>` : ''}
                     </div>
                 `;
                 container.appendChild(item);
             });
 
             if (querySnapshot.empty) {
-                container.innerHTML = '<p>Nessun utente trovato.</p>';
+                container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Nessun utente trovato.</p>';
             }
 
         } catch (e) {
             console.error("Errore nel caricamento della lista utenti:", e);
-            container.innerHTML = '<p style="color:red;">Errore nel caricamento.</p>';
+            container.innerHTML = '<p style="color:var(--danger-color); text-align:center;">Errore nel caricamento.</p>';
         }
     }
 
@@ -822,6 +1127,7 @@
     // --- FUNZIONI CRUD CLIENTS ---
     // ----------------------------------------------------------------------------------
 
+    // ⭐ LOGICA DI CARICAMENTO CLIENTS/SERVICES E POPOLAMENTO SELECT ⭐
     async function loadClientsAndServices() { 
         clientsListData = [];
         servicesListData = [];
@@ -829,7 +1135,7 @@
         servicesMap = {};
 
         try {
-            // Carica Clienti
+            // 1. Carica Clienti (e popola la datalist per l'autocomplete)
             const clientsSnap = await getDocs(collection(db, "clients"));
             const clientDatalist = document.getElementById("clientNames");
             clientDatalist.innerHTML = '';
@@ -842,39 +1148,48 @@
                 clientDatalist.appendChild(option);
             });
 
-            // Carica Servizi
+            // 2. Carica Servizi
             const servicesSnap = await getDocs(query(collection(db, "services"), orderBy("name")));
-            const serviceSelect = document.getElementById("appointmentService");
-            serviceSelect.innerHTML = '<option value="">-- Seleziona Servizio --</option>';
             
-            const modalServiceSelect = document.getElementById("modalAppointmentService");
+            // Selettore Modale Modifica Appuntamento
+            const modalServiceSelect = document.getElementById("modalAppointmentService"); 
             modalServiceSelect.innerHTML = '';
 
+            // Selettore Modale Nuovo Appuntamento (nuovaAppointmentModal)
+            const newModalServiceSelect = document.getElementById("modalNewService"); 
+            newModalServiceSelect.innerHTML = '<option value="">-- Seleziona Servizio --</option>'; 
+            
             servicesSnap.forEach(doc => {
                 const data = { id: doc.id, ...doc.data() };
                 servicesListData.push(data);
                 servicesMap[data.id] = data; 
                 
-                const optionApp = document.createElement('option');
-                optionApp.value = doc.id;
-                optionApp.textContent = `${data.name} (${data.duration} min)`;
-                optionApp.dataset.duration = data.duration;
-                serviceSelect.appendChild(optionApp);
+                const optionBase = document.createElement('option');
+                optionBase.value = doc.id;
+                optionBase.textContent = `${data.name} (${data.duration} min)`;
+                optionBase.dataset.duration = data.duration;
                 
-                const optionModal = document.createElement('option');
-                optionModal.value = doc.id;
-                optionModal.textContent = `${data.name} (${data.duration} min)`;
+                const optionModal = optionBase.cloneNode(true); 
                 modalServiceSelect.appendChild(optionModal);
+                
+                const optionNewModal = optionBase.cloneNode(true);
+                newModalServiceSelect.appendChild(optionNewModal);
             });
 
+            // 3. AGGIORNA LE VISTE IN BASE AI DATI CARICATI
             if (document.getElementById('section_clienti').style.display === 'block') {
                  loadClientAddressBook();
             }
+             if (document.getElementById('section_servizi').style.display === 'block') {
+                 loadServiceList();
+            }
+
 
         } catch (e) {
             console.error("Errore nel caricamento di clienti/servizi:", e);
         }
     }
+    // ⭐ FINE LOGICA DI CARICAMENTO CLIENTS/SERVICES ⭐
 
     async function addClient() { 
         const name = document.getElementById("newClient").value.trim();
@@ -1022,7 +1337,7 @@
         );
 
         if (filteredClients.length === 0) {
-            container.innerHTML = '<p>Nessun cliente trovato.</p>';
+            container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Nessun cliente trovato.</p>';
             return;
         }
 
@@ -1035,7 +1350,7 @@
                     ${client.phone ? `(${client.phone})` : ''}
                 </span>
                 <div class="list-item-actions">
-                    <button class="btn-edit" onclick="openClientModal('${client.id}')">Dettagli</button>
+                    <button class="btn-edit" onclick="openClientModal('${client.id}')"><i class="fas fa-info-circle"></i></button>
                 </div>
             `;
             container.appendChild(item);
@@ -1049,7 +1364,7 @@
 
     async function loadClientAppointmentsHistory(clientName) { 
         const container = document.getElementById("appointmentsHistory");
-        container.innerHTML = 'Caricamento storico...';
+        container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Caricamento storico...</p>';
 
         try {
             const q = query(
@@ -1062,7 +1377,7 @@
             container.innerHTML = '';
 
             if (snap.empty) {
-                container.innerHTML = '<p>Nessun appuntamento passato o futuro trovato.</p>';
+                container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Nessun appuntamento passato o futuro trovato.</p>';
                 return;
             }
 
@@ -1080,7 +1395,7 @@
                 item.innerHTML = `
                     <div>
                         <strong>${date} ${time}</strong>: ${service}${price}
-                        <div style="font-size: 0.8rem; color: #777;">${data.notes ? `Note: ${data.notes}` : ''}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-text-color);">${data.notes ? `Note: ${data.notes}` : ''}</div>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1088,7 +1403,7 @@
 
         } catch (e) {
             console.error("Errore nel caricamento storico appuntamenti:", e);
-            container.innerHTML = '<p style="color:red;">Errore nel caricamento dello storico.</p>';
+            container.innerHTML = '<p style="color:var(--danger-color); text-align:center;">Errore nel caricamento dello storico.</p>';
         }
     }
 
@@ -1136,12 +1451,13 @@
         }
     }
 
+    // ⭐ LOGICA DI VISUALIZZAZIONE LISTA SERVIZI ⭐
     function loadServiceList() { 
         const container = document.getElementById("serviceListContainer");
-        container.innerHTML = '';
+        container.innerHTML = ''; 
 
         if (servicesListData.length === 0) {
-            container.innerHTML = '<p>Nessun servizio trovato. Aggiungine uno qui sopra.</p>';
+            container.innerHTML = '<p style="text-align:center; color: var(--light-text-color);">Nessun servizio trovato. Aggiungine uno qui sopra.</p>';
             return;
         }
 
@@ -1155,12 +1471,14 @@
                     (${service.duration} min)${priceDisplay}
                 </span>
                 <div class="list-item-actions">
-                    <button class="btn-edit" onclick="openServiceModal('${service.id}')">Modifica</button>
+                    <button class="btn-edit" onclick="openServiceModal('${service.id}')"><i class="fas fa-edit"></i></button>
                 </div>
             `;
             container.appendChild(item);
         });
     }
+    // ⭐ FINE LOGICA DI VISUALIZZAZIONE LISTA SERVIZI ⭐
+
 
     async function openServiceModal(serviceId) { 
         currentServiceId = serviceId;
@@ -1175,7 +1493,6 @@
         document.getElementById("modalServiceDuration").value = service.duration;
         document.getElementById("modalServicePrice").value = service.price || 0;
         
-        // Il nome è solo display, non modificabile direttamente (serve per ID)
         document.getElementById("modalServiceName").value = service.name; 
         
         document.getElementById("modalServiceEditButton").onclick = () => editService(serviceId);
@@ -1247,7 +1564,7 @@
             appointmentsListData = [];
             let events = [];
             
-            // Passaggio 1: Raccogli i dati e verifica i conflitti
+            // Passaggio 1: Raccogli i dati
             querySnapshot.docs.forEach(doc => {
                 const data = doc.data();
                 appointmentsListData.push({ id: doc.id, ...data });
@@ -1284,7 +1601,7 @@
                         notes: data.notes,
                         conflict: isConflict 
                     },
-                    color: isConflict ? 'var(--success-color)' : 'var(--primary-color)' 
+                    color: isConflict ? 'var(--danger-color)' : 'var(--primary-color)' 
                 };
             });
 
@@ -1315,12 +1632,14 @@
         return isConflict;
     }
 
-    async function addAppointment() { 
-        const clientName = document.getElementById("appointmentClient").value.trim();
-        const clientPhone = document.getElementById("appointmentPhone").value.trim();
-        const serviceId = document.getElementById("appointmentService").value;
-        const startStr = document.getElementById("appointmentStart").value; 
-        const notes = document.getElementById("appointmentNotes").value.trim();
+    // ⭐ FUNZIONE PER AGGIUNGERE APPUNTAMENTO DALLA MODALE POP-UP ⭐
+    async function addNewAppointmentFromModal() { 
+        // Usa i nuovi ID della modale
+        const clientName = document.getElementById("modalNewClient").value.trim();
+        const clientPhone = document.getElementById("modalNewPhone").value.trim();
+        const serviceId = document.getElementById("modalNewService").value;
+        const startStr = document.getElementById("modalNewStart").value; 
+        const notes = document.getElementById("modalNewNotes").value.trim();
 
         if (!clientName || !serviceId || !startStr) {
             alert("Cliente, Servizio e Orario di Inizio sono obbligatori.");
@@ -1337,7 +1656,7 @@
         const endStr = calculateAppointmentEnd(startStr, durationMinutes);
         const startISO = new Date(startStr).toISOString();
 
-        // 1. Controllo Conflitto (Passando null come ID perché è una nuova creazione)
+        // 1. Controllo Conflitto
         const isConflict = await checkAppointmentConflict(null, startISO, endStr);
         if (isConflict) {
             if (!confirm("Attenzione: Conflitto di orario rilevato! Vuoi comunque creare l'appuntamento?")) {
@@ -1375,12 +1694,13 @@
 
             await addDoc(collection(db, "appointments"), newAppointment);
             
-            // Pulisci il form e ricarica
-            document.getElementById("appointmentClient").value = '';
-            document.getElementById("appointmentPhone").value = '';
-            document.getElementById("appointmentService").value = '';
-            document.getElementById("appointmentStart").value = '';
-            document.getElementById("appointmentNotes").value = '';
+            // Pulisci il form e chiudi la modale
+            document.getElementById("modalNewClient").value = '';
+            document.getElementById("modalNewPhone").value = '';
+            document.getElementById("modalNewService").value = '';
+            document.getElementById("modalNewStart").value = '';
+            document.getElementById("modalNewNotes").value = '';
+            closeNewAppointmentModal();
             
             await loadAppointments();
             alert("Appuntamento creato con successo!");
@@ -1390,6 +1710,11 @@
             alert("Errore nell'aggiunta dell'appuntamento.");
         }
     }
+
+    function closeNewAppointmentModal() {
+        document.getElementById("newAppointmentModal").style.display = "none";
+    }
+    // ⭐ FINE NUOVE FUNZIONI AGGIUNTE ⭐
 
     async function openAppointmentModal(appointmentId) { 
         currentAppointmentId = appointmentId;
@@ -1522,13 +1847,17 @@
         const calendarEl = document.getElementById('calendar');
         if (calendarEl) {
             calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
+                // ⭐ CONFIGURAZIONE CALENDARIO AGGIORNATA ⭐
+                initialView: 'dayGridWeek', 
                 locale: 'it',
+                timeZone: 'local', 
+                
                 headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay' 
+                    left: 'prev,next', // Freccette P/N a sinistra
+                    center: 'title',   // Titolo al centro
+                    right: 'today dayGridWeek,timeGridDay' // Oggi + Viste ottimizzate per mobile (Month rimosso)
                 },
+                
                 slotMinTime: '08:00:00', 
                 slotMaxTime: '20:00:00',
                 slotDuration: '00:15:00',
@@ -1539,25 +1868,32 @@
                 allDaySlot: false,
                 events: [],
                 
+                // ⭐ FUNZIONE CLICK/TAP SULLE DATE/GIORNI (per passare alla vista giorno) ⭐
+                dateClick: function(info) {
+                    // Controlla se siamo in una vista di tipo "griglia" o "settimana"
+                    if (info.view.type.includes('dayGrid') || info.view.type.includes('timeGridWeek')) {
+                        // Passa alla vista giorno specifico e imposta la data cliccata
+                        calendar.changeView('timeGridDay', info.dateStr);
+                    }
+                    // Se clicchi sulla griglia oraria di timeGridDay, viene gestito da 'select' per aprire la modale
+                },
+                // ⭐ FINE FUNZIONE CLICK/TAP ⭐
+
                 select: function(info) {
                     if (info.view.type === 'dayGridMonth' || info.allDay) {
-                        calendar.changeView('timeGridDay', info.startStr);
                         calendar.unselect(); 
                         return;
                     }
                     
-                    const selectedService = document.getElementById('appointmentService').value;
+                    const startStr = info.startStr.substring(0, 16); 
+
+                    document.getElementById("modalNewClient").value = '';
+                    document.getElementById("modalNewPhone").value = ''; 
+                    document.getElementById("modalNewService").value = ''; 
+                    document.getElementById("modalNewStart").value = startStr; 
+                    document.getElementById("modalNewNotes").value = '';
                     
-                    if (!selectedService) {
-                        alert("Seleziona prima un servizio per calcolare la durata.");
-                        calendar.unselect();
-                        return;
-                    }
-                    
-                    document.getElementById("appointmentClient").value = '';
-                    document.getElementById("appointmentPhone").value = ''; 
-                    document.getElementById("appointmentStart").value = info.startStr.substring(0, 16); 
-                    document.getElementById("appointmentNotes").value = '';
+                    document.getElementById("newAppointmentModal").style.display = 'block';
                     
                     calendar.unselect(); 
                 },
@@ -1615,6 +1951,27 @@
                 closeSideMenu();
             }
         }
+        
+        // Listener per il resize della finestra per gestire la navigazione
+        window.addEventListener('resize', () => {
+            if (currentUser) {
+                const desktopNav = document.getElementById('desktopNav');
+                const menuToggle = document.getElementById('menuToggle');
+                if (window.innerWidth <= 768) {
+                    menuToggle.style.display = 'block';
+                    desktopNav.style.display = 'none';
+                    if (document.getElementById('section_gestione').style.display === 'block') {
+                        document.getElementById('fabNewAppointment').style.display = 'flex';
+                    }
+                } else {
+                    menuToggle.style.display = 'none';
+                    desktopNav.style.display = 'flex';
+                    document.getElementById('fabNewAppointment').style.display = 'none';
+                    closeSideMenu(); // Chiudi il menu hamburger se si allarga lo schermo
+                }
+            }
+            if (calendar) calendar.updateSize();
+        });
     });
 
     // Esposizione delle funzioni globali per l'HTML 
@@ -1640,9 +1997,11 @@
     window.deleteService = deleteService;
 
     // Funzioni Appuntamenti
-    window.addAppointment = addAppointment;
+    window.addNewAppointmentFromModal = addNewAppointmentFromModal;
+    window.closeNewAppointmentModal = closeNewAppointmentModal;     
     window.updateAppointment = updateAppointment;
     window.deleteAppointment = deleteAppointment;
+    window.openAppointmentModal = openAppointmentModal; // Espongo per FC eventClick
 
     // Funzioni Admin
     window.createUser = createUser;
@@ -1659,6 +2018,14 @@
     <div class="nav-header" style="display: none;" id="mainNavBar">
         <button id="menuToggle" onclick="openSideMenu()">☰</button>
         <a href="#" class="app-title" onclick="changeView('section_gestione'); return false;">Fashion Hair</a>
+
+        <div class="desktop-nav" id="desktopNav">
+            <a href="#" onclick="changeView('section_gestione');">📅 Appuntamenti</a>
+            <a href="#" onclick="changeView('section_clienti');">👤 Clienti</a>
+            <a href="#" onclick="changeView('section_servizi');">✂️ Servizi</a>
+            <a href="#" id="adminDesktopOption" onclick="changeView('section_admin');" style="display:none;">🗂️ Admin</a>
+            <button id="logoutButton" onclick="logout()">Logout</button>
+        </div>
     </div>
 
     <div id="sideMenu" class="sidenav">
@@ -1672,7 +2039,7 @@
         
         <hr style="border-top: 1px solid #333; margin: 15px 0;">
         
-        <button id="menuLogoutButton" onclick="logout()">➡️ Logout</button>
+        <button id="menuLogoutButton" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
     
     <div id="menuOverlay" onclick="closeSideMenu()"></div>
@@ -1680,7 +2047,7 @@
 
     <div id="loginContainer">
         <div id="loginBox">
-            <h1>💇 Login Fashion Hair</h1>
+            <h1>💇 Fashion Hair</h1>
             <input type="text" id="loginUsername" placeholder="Nome Utente (es. admin)" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
             <p id="loginMessage"></p>
@@ -1690,50 +2057,16 @@
 
     <div id="appContent" style="display: none;">
         
-        <div id="section_gestione" class="main-section">
-            <h2>✏️ Nuovo Appuntamento</h2>
-             <div class="container">
-                <div class="block">
-                    
-                    <label for="appointmentClient">Cliente:</label>
-                    <input type="text" id="appointmentClient" list="clientNames" placeholder="Nome Cliente" required>
-                    <datalist id="clientNames">
-                        </datalist>
-
-                    <label for="appointmentPhone">Telefono (per nuovo cliente):</label>
-                    <input type="tel" id="appointmentPhone" placeholder="Numero di Telefono (opzionale)">
-
-                    <label for="appointmentService">Servizio:</label>
-                    <select id="appointmentService" required>
-                        <option value="">-- Seleziona Servizio --</option>
-                        </select>
-
-                    <div class="flex-row">
-                        <div style="flex: 1;">
-                            <label for="appointmentStart">Orario Inizio:</label>
-                            <input type="datetime-local" id="appointmentStart" required>
-                        </div>
-                    </div>
-                    
-                    <label for="appointmentNotes">Note Appuntamento/Cliente:</label>
-                    <textarea id="appointmentNotes" placeholder="Note speciali (colore, allergie, ecc.). Se il cliente è nuovo, queste diventano le note in rubrica."></textarea>
-
-                    <button onclick="addAppointment()">Aggiungi Appuntamento</button>
-                    
-                    <hr>
-                </div>
-            </div>
-            
-            <hr>
+        <div id="section_gestione" class="main-section content-wrapper">
+            <h1>Gestione Appuntamenti</h1>
             <div id='calendar'></div>
-
         </div>
 
-        <div id="section_clienti" class="main-section" style="display: none;">
-            <h2>👤 Rubrica e Anagrafica Clienti</h2>
+        <div id="section_clienti" class="main-section content-wrapper" style="display: none;">
+            <h1>👤 Rubrica e Anagrafica Clienti</h1>
             <div class="container">
                 <div class="block">
-                    <h3>➕ Aggiungi Nuovo Cliente</h3>
+                    <h2>➕ Aggiungi Nuovo Cliente</h2>
                     <input type="text" id="newClient" placeholder="Nome Cliente (es. Maria Rossi)" required>
                     <input type="tel" id="clientPhone" placeholder="Telefono">
                     <textarea id="clientNotes" placeholder="Note generiche cliente"></textarea>
@@ -1741,22 +2074,22 @@
                 </div>
 
                 <div class="block">
-                    <h3>📚 Lista Clienti Esistenti</h3>
-                    <input type="text" id="clientSearchInput" placeholder="Cerca per nome o telefono..." onkeyup="filterClientAddressBook()" style="margin-bottom: 10px;">
+                    <h2>📚 Lista Clienti Esistenti</h2>
+                    <input type="text" id="clientSearchInput" placeholder="Cerca per nome o telefono..." onkeyup="filterClientAddressBook()" style="margin-bottom: 15px;">
                     
                     <div id="clientListContainer" class="list-container">
-                        <p>Caricamento clienti...</p>
+                        <p style="text-align:center; color: var(--light-text-color);">Caricamento clienti...</p>
                     </div>
                     <small>Clicca sul nome per modificare i dati o vedere lo storico.</small>
                 </div>
             </div>
         </div>
 
-        <div id="section_servizi" class="main-section" style="display: none;">
-            <h2>✂️ Tariffe e Servizi</h2>
+        <div id="section_servizi" class="main-section content-wrapper" style="display: none;">
+            <h1>✂️ Tariffe e Servizi</h1>
             <div class="container">
                 <div class="block">
-                    <h3>➕ Aggiungi Nuovo Servizio</h3>
+                    <h2>➕ Aggiungi Nuovo Servizio</h2>
                     <input type="text" id="newService" placeholder="Nome Servizio (es. Taglio Donna)" required>
                     <input type="number" id="serviceDuration" placeholder="Durata (minuti)" required min="5">
                     <input type="number" id="servicePrice" placeholder="Prezzo (€) (opzionale)" min="0" step="0.01">
@@ -1764,16 +2097,16 @@
                 </div>
 
                 <div class="block">
-                    <h3>📋 Lista Servizi</h3>
+                    <h2>📋 Lista Servizi</h2>
                     <div id="serviceListContainer" class="list-container">
-                        <p>Caricamento servizi...</p>
+                        <p style="text-align:center; color: var(--light-text-color);">Caricamento servizi...</p>
                     </div>
                     <small>Clicca sul servizio per modificarne durata e prezzo.</small>
                 </div>
             </div>
         </div>
 
-        <div id="section_admin" class="main-section" style="display: none;">
+        <div id="section_admin" class="main-section content-wrapper" style="display: none;">
             <h1>🗂️ Pannello di Amministrazione</h1>
 
             <div class="container">
@@ -1787,15 +2120,16 @@
                 <div class="block">
                     <h2>👥 Gestione Utenti</h2>
                     <div id="userListContainer" class="list-container">
-                        <p>Caricamento utenti...</p>
+                        <p style="text-align:center; color: var(--light-text-color);">Caricamento utenti...</p>
                     </div>
                     <small>Clicca su un utente per modificare o eliminare.</small>
                 </div>
             </div>
-            
-            <hr>
         </div>
 
+        <div id="fabNewAppointment" class="fab" onclick="document.getElementById('newAppointmentModal').style.display = 'block'; document.getElementById('modalNewStart').value = new Date().toISOString().substring(0, 16);">
+            <i class="fas fa-plus"></i>
+        </div>
 
     </div> 
 
@@ -1819,7 +2153,7 @@
             <div id="appointmentsHistory" class="appointments-history">
                 </div>
 
-            <button id="modalClientEditButton" onclick="editClient(document.getElementById('modalClientId').value)">Salva Modifiche</button>
+            <button id="modalClientEditButton" class="btn-primary" onclick="editClient(document.getElementById('modalClientId').value)">Salva Modifiche</button>
             <button id="modalClientDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Cliente</button>
         </div>
     </div>
@@ -1829,6 +2163,7 @@
             <span class="close" onclick="closeServiceModal()">&times;</span>
             <h2 id="modalServiceNameTitle">Modifica Servizio</h2>
 
+            <label for="modalServiceName">Nome Servizio:</label>
             <input type="text" id="modalServiceName" readonly> 
 
             <label for="modalServiceDuration">Durata (minuti):</label>
@@ -1837,11 +2172,39 @@
             <label for="modalServicePrice">Prezzo (€):</label>
             <input type="number" id="modalServicePrice" min="0" step="0.01">
 
-            <button id="modalServiceEditButton" onclick="editService(currentServiceId)">Salva Modifiche</button>
+            <button id="modalServiceEditButton" class="btn-primary" onclick="editService(currentServiceId)">Salva Modifiche</button>
             <button id="modalServiceDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Servizio</button>
         </div>
     </div>
     
+    <div id="newAppointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNewAppointmentModal()">&times;</span>
+            <h2>➕ Nuovo Appuntamento</h2>
+            
+            <label for="modalNewClient">Cliente:</label>
+            <input type="text" id="modalNewClient" list="clientNames" placeholder="Nome Cliente" required>
+            <datalist id="clientNames">
+                </datalist>
+            
+            <label for="modalNewPhone">Telefono (per nuovo cliente):</label>
+            <input type="tel" id="modalNewPhone" placeholder="Numero di Telefono (opzionale)">
+
+            <label for="modalNewService">Servizio:</label>
+            <select id="modalNewService" required>
+                <option value="">-- Seleziona Servizio --</option>
+                </select>
+
+            <label for="modalNewStart">Orario Inizio:</label>
+            <input type="datetime-local" id="modalNewStart" required readonly>
+            <small>L'orario è pre-compilato dal calendario. Clicca su un orario nel calendario per impostarlo.</small>
+            
+            <label for="modalNewNotes">Note Appuntamento/Cliente:</label>
+            <textarea id="modalNewNotes" placeholder="Note speciali (colore, allergie, ecc.). Se il cliente è nuovo, queste diventano le note in rubrica."></textarea>
+
+            <button class="btn-success" onclick="addNewAppointmentFromModal()">Salva Appuntamento</button>
+        </div>
+    </div>
     <div id="appointmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeAppointmentModal()">&times;</span>
@@ -1872,7 +2235,7 @@
             
             <small style="margin-top: 10px; display: block;">**L'orario di fine viene ricalcolato dal sistema in base alla durata del servizio.**</small>
 
-            <button id="modalAppointmentEditButton" onclick="updateAppointment()">Salva Modifiche</button>
+            <button id="modalAppointmentEditButton" class="btn-primary" onclick="updateAppointment()">Salva Modifiche</button>
             <button id="modalAppointmentDeleteButton" class="btn-delete" style="margin-top: 5px;" onclick="deleteAppointment()">Elimina Appuntamento</button>
         </div>
     </div>
@@ -1890,7 +2253,7 @@
             <label for="modalUserPassword">Password:</label>
             <input type="text" id="modalUserPassword" required>
             
-            <p id="adminMessage" style="color: var(--delete-color); font-weight: bold;"></p>
+            <p id="adminMessage" style="color: var(--danger-color); font-weight: bold; font-size: 0.9rem;"></p>
 
             <div id="adminToggleContainer" class="switch-container">
                 <span>Accesso Amministratore (Admin):</span>
@@ -1900,7 +2263,7 @@
                 </label>
             </div>
 
-            <button id="modalUserEditButton" onclick="updateUser()">Salva Modifiche</button>
+            <button id="modalUserEditButton" class="btn-primary" onclick="updateUser()">Salva Modifiche</button>
             <button id="modalUserDeleteButton" class="btn-delete" style="margin-top: 5px;">Elimina Utente</button>
         </div>
     </div>
